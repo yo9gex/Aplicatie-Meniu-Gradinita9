@@ -1,0 +1,34 @@
+Descriere Generală:
+Aceasta este o aplicație web avansată, concepută pentru a simplifica și automatiza procesul de calcul al valorilor nutriționale pentru meniuri complete.
+ Utilizând puterea inteligenței artificiale prin API-ul Gemini de la Google, aplicația transformă o listă simplă de ingrediente într-un raport detaliat și profesional.
+
+
+Ce face aplicația?
+1. Calcul Nutritional Detaliat: Utilizatorii pot introduce ingredientele pentru patru mese diferite (Mic Dejun, Prânz Felul 1, Prânz Felul 2, Gustare). 
+Aplicația calculează automat valorile nutriționale esențiale: calorii, proteine, lipide și glucide.
+
+2. Analiza Greutății (Brut vs. Net): O funcționalitate distinctivă este calculul greutății brute (cantitatea inițială), a scăzamintelor (pierderile prin procesare termică, curățare etc.) 
+  și a greutății nete (cantitatea finală rămasă în preparat).
+  Acest lucru este crucial pentru o acuratețe maximă în bucătăriile profesionale.
+
+3. Scalabilitate: Calculele pot fi ajustate dinamic pentru orice număr de persoane, făcând aplicația ideală atât pentru uz individual, cât și pentru colectivități.
+
+4. Raportare Profesională: Generează rapoarte PDF clare și bine structurate, perfecte pentru documentație, arhivare sau prezentarea meniului. 
+Rapoartele includ detalii pentru fiecare masă și un total general.
+
+5. Managementul Istoricului:
+Salvare Meniuri: Meniurile calculate pot fi salvate cu un singur clic, împreună cu data curentă.
+Vizualizare Istoric: O secțiune dedicată ("Istoric") permite vizualizarea tuturor meniurilor salvate anterior.
+Analiză și Grafice: Aplicația urmărește evoluția în timp a principalilor nutrienți (calorii, proteine etc.). 
+Datele sunt prezentate sub formă de tabele și grafice comparative, care afișează valoarea realizată în raport cu necesarul minim și maxim recomandat.
+
+
+Cui se adresează?
+
+Aplicația este un instrument valoros pentru o gamă largă de utilizatori, în special în mediul profesional:
+1. Bucătari și Administratori de Restaurant/Catering: Pentru a crea meniuri echilibrate, a calcula costurile cu precizie (food cost) și a oferi clienților informații transparente despre valorile nutriționale.
+2. Nutriționiști și Dieteticieni: Pentru a elabora planuri alimentare personalizate și a urmări progresul clienților.
+3. Manageri de Instituții (Grădinițe, Școli, Spitale, Cămine): Pentru a asigura conformitatea cu normele legale privind alimentația în colectivități și pentru a planifica meniuri sănătoase și echilibrate pentru un număr mare de persoane.
+4. Persoane Pasionate de Fitness și o Alimentație Sănătoasă: Pentru cei care doresc un control riguros asupra dietei lor și o înțelegere detaliată a ceea ce consumă.
+
+Pe scurt, este o soluție completă care combină simplitatea în utilizare cu puterea analizei de date, transformând o sarcină complexă și cronofagă într-un proces eficient și intuitiv.
