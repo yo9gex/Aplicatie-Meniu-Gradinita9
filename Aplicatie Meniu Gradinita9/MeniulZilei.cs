@@ -11,13 +11,15 @@ namespace Aplicatie_Meniu_Gradinita9
 {
     public partial class MeniulZilei : UserControl
     {
-        //SqlConnection conn = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
-        // SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True");
         string dbPath;
         string connectionString;
         SqlConnection conn;
 
         public string Date;
+        public decimal pDV;
+        public decimal legUscate;
+     
+
         public string ListaMicDejun { get; private set; }
         public string ListaGustare { get; private set; }
         public string ListaPranzFel1 { get; private set; }
@@ -91,21 +93,34 @@ namespace Aplicatie_Meniu_Gradinita9
                     string verificaDataLipide = "SELECT COUNT(*) FROM lipide WHERE data_adaugare = @today  ";
                     string verificaDataGlucide = "SELECT COUNT(*) FROM glucide WHERE data_adaugare = @today  ";
                     string verificaDataCalorii = "SELECT COUNT(*) FROM calorii WHERE data_adaugare = @today  ";
+                    string verificareDataFier = "SELECT COUNT(*) FROM fier WHERE data_adaugare = @today  ";
+                    string verificareDataCalciu = "SELECT COUNT(*) FROM calciu WHERE data_adaugare = @today  ";
+                    string verificareGrupProduse = "SELECT COUNT(*) FROM grupProduse WHERE data_adaugare = @today ";
+
                     using (SqlCommand cmd = new SqlCommand(verificaDataProteine, conn))
                     using (SqlCommand cmd2 = new SqlCommand(verificaDataLipide, conn))
                     using (SqlCommand cmd3 = new SqlCommand(verificaDataGlucide, conn))
                     using (SqlCommand cmd4 = new SqlCommand(verificaDataCalorii, conn))
+                    using (SqlCommand cmd5 = new SqlCommand(verificareDataFier, conn))
+                    using (SqlCommand cmd6 = new SqlCommand(verificareDataCalciu, conn))
+                        using(SqlCommand cmd7 = new SqlCommand(verificareGrupProduse, conn))
                     {
                         DateTime today = DateTime.Today;
                         cmd.Parameters.AddWithValue("@today", today);
                         cmd2.Parameters.AddWithValue("@today", today);
                         cmd3.Parameters.AddWithValue("@today", today);
                         cmd4.Parameters.AddWithValue("@today", today);
+                        cmd5.Parameters.AddWithValue("@today", today);
+                        cmd6.Parameters.AddWithValue("@today", today);
+                        cmd7.Parameters.AddWithValue("@today", today);
                         int count = (int)cmd.ExecuteScalar();
                         int count2 = (int)cmd2.ExecuteScalar();
                         int count3 = (int)cmd3.ExecuteScalar();
                         int count4 = (int)cmd4.ExecuteScalar();
-                        if (count > 0 || count2 > 0 || count3 > 0 || count4 > 0 || count > .0)
+                        int count5 = (int)cmd5.ExecuteScalar();
+                        int count6 = (int)cmd6.ExecuteScalar();
+                        int count7 = (int)cmd7.ExecuteScalar();
+                        if (count > 0 || count2 > 0 || count3 > 0 || count4 > 0 || count5 > 0 || count6 > 0 || count7 > 0)
                         {
                             MessageBox.Show("Parametrii nutritionali pentru ziua de astazi au fost deja adaugati in Ancheta Alimentara si Total Nutrienti!", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
@@ -124,6 +139,9 @@ namespace Aplicatie_Meniu_Gradinita9
             LipideTotale();
             GlucideTotale();
             CaloriiTotale();
+            FierTotal();
+            CalciuTotal();
+            GrupProduse();
 
 
 
@@ -131,11 +149,7 @@ namespace Aplicatie_Meniu_Gradinita9
         }
         private void CreareMicDejun()
         {
-            //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30";
-            //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True";
-
             string query = "Select nume, TCantitate, TNet FROM totalAlimenteMicDejun ORDER BY nume";
-
 
             using (SqlConnection conn = new SqlConnection(connectionString))
 
@@ -162,16 +176,7 @@ namespace Aplicatie_Meniu_Gradinita9
                         string valoareLine = $"{lineNume}{lineTcantitate}{lineTNet}";
                         micDejun_lst.Items.Add(valoareLine);
 
-
-                        // string itemText = string.Format("{0}\t{1}\t{2}",
-                        //reader["nume"].ToString(),
-                        //reader["Tcantitate"].ToString(),exempl
-                        //reader["TNet"].ToString());
-                        // micDejun_lst.Items.Add(itemText);
-
                     }
-
-
                 }
 
                 catch (Exception ex)
@@ -188,9 +193,6 @@ namespace Aplicatie_Meniu_Gradinita9
 
         private void CrearePranzFelul1()
         {
-            // string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30";
-            // string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True";
-
             string query = "Select nume, TCantitate, TNet FROM totalAlimentePranz WHERE tip_fel = 'Felul 1' OR tip_fel = 'Ambele' ORDER BY nume";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -216,11 +218,7 @@ namespace Aplicatie_Meniu_Gradinita9
                         string lineTNet = TNet.PadRight(12);
                         string valoareLine = $"{lineNume}{lineTcantitate}{lineTNet}";
                         felul1Pranz_lst.Items.Add(valoareLine);
-                        // string itemText = string.Format("{0}\t{1}\t{2}",
-                        //reader["nume"].ToString(),
-                        //reader["Tcantitate"].ToString(),
-                        //reader["TNet"].ToString());
-                        // felul1Pranz_lst.Items.Add(itemText);
+                      
                     }
                     reader.Close();
                 }
@@ -237,9 +235,6 @@ namespace Aplicatie_Meniu_Gradinita9
         }
         private void CrearePranzFelul2()
         {
-            // string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30";
-            // string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True";
-
             string query = "Select nume, TCantitate, TNet FROM totalAlimentePranz WHERE tip_fel = 'Felul 2' OR tip_fel = 'Ambele' ORDER BY nume";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -265,11 +260,7 @@ namespace Aplicatie_Meniu_Gradinita9
                         string lineTNet = TNet.PadRight(12);
                         string valoareLine = $"{lineNume}{lineTcantitate}{lineTNet}";
                         felul2Pranz_lst.Items.Add(valoareLine);
-                        // string itemText = string.Format("{0}\t{1}\t{2}",
-                        //reader["nume"].ToString(),
-                        //reader["Tcantitate"].ToString(),
-                        //reader["TNet"].ToString());
-                        // felul2Pranz_lst.Items.Add(itemText);
+                    
                     }
                 }
                 catch (Exception ex)
@@ -285,9 +276,6 @@ namespace Aplicatie_Meniu_Gradinita9
         }
         private void CreareGustare()
         {
-            //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30";
-            // string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True";
-
             string query = "Select nume, TCantitate, TNet FROM totalAlimenteGustare ORDER BY nume";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -313,11 +301,7 @@ namespace Aplicatie_Meniu_Gradinita9
                         string lineTNet = TNet.PadRight(12);
                         string valoareLine = $"{lineNume}{lineTcantitate}{lineTNet}";
                         gustare_lst.Items.Add(valoareLine);
-                        // string itemText = string.Format("{0}\t\n{1}\t\n{2}",
-                        //reader["nume"].ToString(),
-                        //reader["Tcantitate"].ToString(),
-                        //reader["TNet"].ToString());
-                        // gustare_lst.Items.Add(itemText);
+                    
                     }
                 }
                 catch (Exception ex)
@@ -399,27 +383,29 @@ namespace Aplicatie_Meniu_Gradinita9
         { 
 
             NecesarAlimente na = new NecesarAlimente();
-            na.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
                 na.GetTotalCantitate_lbl());
           
             totalDeclaratieNutrienti_lst.Items.Clear();
-            if(NumarCopiiTotal == 0)
+            if(numarCopiiTotal == 0)
             {
-                NumarCopiiTotal = 1; // Previne diviziunea la zero
+                numarCopiiTotal = 1; // Previne diviziunea la zero
             }
             totalDeclaratieNutrienti_lst.Items.Add("");
             totalDeclaratieNutrienti_lst.Items.Add("");
             totalDeclaratieNutrienti_lst.Items.Add("");
-            totalDeclaratieNutrienti_lst.Items.Add("Total Proteine: " + (decimal.Parse(tP) / NumarCopiiTotal).ToString("F2") + " gr.");
-            totalDeclaratieNutrienti_lst.Items.Add("Total Lipide: " + (decimal.Parse(tL) / NumarCopiiTotal).ToString("F2") + " gr.");
-            totalDeclaratieNutrienti_lst.Items.Add("Total Glucide: " + (decimal.Parse(tG)/ NumarCopiiTotal).ToString("F2") + " gr.");
-            totalDeclaratieNutrienti_lst.Items.Add("Total Calorii: " + (decimal.Parse(tCal) / NumarCopiiTotal).ToString("F2") + " kcal/copil");
+            totalDeclaratieNutrienti_lst.Items.Add("Total Proteine: " + (decimal.Parse(tP) / numarCopiiTotal).ToString("F2") + " gr.");
+            totalDeclaratieNutrienti_lst.Items.Add("Total Lipide: " + (decimal.Parse(tL) / numarCopiiTotal).ToString("F2") + " gr.");
+            totalDeclaratieNutrienti_lst.Items.Add("Total Glucide: " + (decimal.Parse(tG)/ numarCopiiTotal).ToString("F2") + " gr.");
+            totalDeclaratieNutrienti_lst.Items.Add("Total Calorii: " + (decimal.Parse(tCal) / numarCopiiTotal).ToString("F2") + " kcal/copil");
 
         }
         private void NecesarEstimatCopil()
         {
             NecesarAlimente na = new NecesarAlimente();
-            na.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
                 na.GetTotalCantitate_lbl());
             necesarEstimativCopil_lst.Items.Clear();
             necesarEstimativCopil_lst.Items.Add("");
@@ -446,27 +432,29 @@ namespace Aplicatie_Meniu_Gradinita9
         private void ProteineTotale()
         {
             NecesarAlimente na = new NecesarAlimente();
-            na.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
                 na.GetTotalCantitate_lbl());
 
             decimal total_proteine = decimal.Parse(tP);
-            // SqlConnection conn = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
-
+            decimal proteine_veg = decimal.Parse(tP_veg);
+            decimal proteine_anim = decimal.Parse(tP_anim);
 
             if (conn.State == ConnectionState.Closed)
                 try
                 {
                     conn.Open();
                     DateTime today = DateTime.Now;
-                    string query = "INSERT INTO proteine (data_adaugare, total_proteine) Values (@today, @total_proteine)";
+                    string query = "INSERT INTO proteine (data_adaugare, proteine_vegetale, proteine_animale, total_proteine) " +
+                        "Values (@today, @proteine_vegetale, @proteine_animale, @total_proteine)";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@today", today);
+                        cmd.Parameters.AddWithValue("@proteine_vegetale", proteine_veg);
+                        cmd.Parameters.AddWithValue("@proteine_animale", proteine_anim);
                         cmd.Parameters.AddWithValue("@total_proteine", total_proteine);
                         cmd.ExecuteNonQuery();
                     }
-
-
                 }
                 catch (Exception ex)
                 {
@@ -480,21 +468,26 @@ namespace Aplicatie_Meniu_Gradinita9
         private void LipideTotale()
         {
             NecesarAlimente na = new NecesarAlimente();
-            na.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
                 na.GetTotalCantitate_lbl());
 
             decimal total_lipide = decimal.Parse(tL);
-            // SqlConnection conn = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
+            decimal lipide_veg = decimal.Parse(tL_veg);
+            decimal lipide_anim = decimal.Parse(tL_anim);
 
             if (conn.State == ConnectionState.Closed)
                 try
                 {
                     conn.Open();
                     DateTime today = DateTime.Now;
-                    string query = "INSERT INTO lipide (data_adaugare, total_lipide) Values (@today, @total_lipide)";
+                    string query = "INSERT INTO lipide (data_adaugare, lipide_vegetale, lipide_animale, total_lipide) " +
+                        "Values (@today, @lipide_vegetale, @lipide_animale, @total_lipide)";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@today", today);
+                        cmd.Parameters.AddWithValue("@lipide_vegetale", lipide_veg);
+                        cmd.Parameters.AddWithValue("@lipide_animale", lipide_anim);
                         cmd.Parameters.AddWithValue("@total_lipide", total_lipide);
                         cmd.ExecuteNonQuery();
                     }
@@ -511,10 +504,11 @@ namespace Aplicatie_Meniu_Gradinita9
         private void GlucideTotale()
         {
             NecesarAlimente na = new NecesarAlimente();
-            na.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
                 na.GetTotalCantitate_lbl());
             decimal total_glucide = decimal.Parse(tG);
-            //SqlConnection conn = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
+
             if (conn.State == ConnectionState.Closed)
                 try
                 {
@@ -540,10 +534,11 @@ namespace Aplicatie_Meniu_Gradinita9
         public void CaloriiTotale()
         {
             NecesarAlimente na = new NecesarAlimente();
-            na.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
                 na.GetTotalCantitate_lbl());
             decimal total_calorii = decimal.Parse(tCal);
-            //  SqlConnection conn = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
+
             if (conn.State == ConnectionState.Closed)
                 try
                 {
@@ -566,6 +561,181 @@ namespace Aplicatie_Meniu_Gradinita9
                     conn.Close();
                 }
         }
+        public void FierTotal()
+        {
+            NecesarAlimente na = new NecesarAlimente();
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+                na.GetTotalCantitate_lbl());
+            decimal total_fier = decimal.Parse(tFier);
+            if (conn.State == ConnectionState.Closed)
+                try
+                {
+                    conn.Open();
+                    DateTime today = DateTime.Now;
+                    string query = "INSERT INTO fier (data_adaugare, total_fier) Values (@today, @total_fier)";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@today", today);
+                        cmd.Parameters.AddWithValue("@total_fier", total_fier);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("A aparut o eroare: " + ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+        }
+        public void CalciuTotal()
+        {
+            NecesarAlimente na = new NecesarAlimente();
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+                na.GetTotalCantitate_lbl());
+            decimal total_calciu = decimal.Parse(tCalciu);
+            if (conn.State == ConnectionState.Closed)
+                try
+                {
+                    conn.Open();
+                    DateTime today = DateTime.Now;
+                    string query = "INSERT INTO calciu (data_adaugare, total_calciu) Values (@today, @total_calciu)";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@today", today);
+                        cmd.Parameters.AddWithValue("@total_calciu", total_calciu);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("A aparut o eroare: " + ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+        }
+        public void GrupProduse()
+        {
+            decimal produsDerivatCereale = 0;
+            decimal legumeUscate = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM produseDerivateCereale WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM peste WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM carneProduseCarne WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM produseZaharoase WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM legumeProaspete WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM oua WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM ulei WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM fructe WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM laptePreparateLapte WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM fructeOleaginoase WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM sucuriCompoturi WHERE status = 'Alege'" +
+                "UNION ALL SELECT grupa_produse1, grupa_produse2, TCoeficient1, TCoeficient2 FROM legumeConservate WHERE status = 'Alege'";
+
+                  if (conn.State == ConnectionState.Closed)
+                try
+                {
+                    conn.Open();
+
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    DateTime today = DateTime.Now;
+
+
+
+
+                    while (dr.Read())
+                    {
+                        string grupa1 = Convert.ToString(dr["grupa_produse1"]);
+                        string grupa2 = Convert.ToString(dr["grupa_produse2"]);
+                        string coeficient1 = Convert.ToString(dr["TCoeficient1"]);
+                        string coeficient2 = Convert.ToString(dr["TCoeficient2"]);
+
+                        decimal grupa_produs1 = decimal.Parse(grupa1);
+                        decimal grupa_produs2 = decimal.Parse(grupa2);
+                        decimal coef1 = decimal.Parse(coeficient1);
+                        decimal coef2 = decimal.Parse(coeficient2);
+
+
+                        
+
+
+                        if (grupa_produs1 == 8)
+
+                        {
+                            // decimal Tcoef = coef1 + coef2;
+                            produsDerivatCereale += coef1;
+
+                        }
+
+                        if (grupa_produs2 == 13)
+                        {
+                            legumeUscate += coef2;
+                        }
+                          
+                    }
+                        
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show("A aparut o eroare: " + ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+
+                }
+                pDV = produsDerivatCereale;
+                legUscate = legumeUscate;
+
+            }
+            if (conn.State == ConnectionState.Closed)
+                try { 
+                    conn.Open();
+                    DateTime today = DateTime.Now;
+                    string insertQuery = "INSERT INTO grupProduse (data_adaugare, lapteProduseLapte, carneProduseCarne, pestePreparatePeste, oua, grasimiTotale, " +
+                                "grasimiAnimale, grasimiVegetale, cerealeProduseCereale, cartofi, alteLegume, legumeUscate, fructe, zaharuri) " +
+                                "VALUES (@dataAdaugare, @lapteProduseLapte, @carneProduseCarne, @pestePreparatePeste, @oua, @grasimiTotale, @grasimiAnimale, @grasimiVegetale, @cerealeProduseCereale, @cartofi, @alteLegume, @legumeUscate, @fructe, @zaharuri)";
+                    SqlCommand insertCmd = new SqlCommand(insertQuery, conn);
+                    insertCmd.Parameters.AddWithValue("@dataAdaugare", today);
+                    insertCmd.Parameters.AddWithValue("lapteProduseLapte", 0);
+                    insertCmd.Parameters.AddWithValue("carneProduseCarne", 0);
+                    insertCmd.Parameters.AddWithValue("@pestePreparatePeste", 0);
+                    insertCmd.Parameters.AddWithValue("@oua", 0);
+                    insertCmd.Parameters.AddWithValue("@grasimiTotale", 0);
+                    insertCmd.Parameters.AddWithValue("@grasimiAnimale", 0);
+                    insertCmd.Parameters.AddWithValue("@grasimiVegetale", 0);
+                    insertCmd.Parameters.AddWithValue("@cerealeProduseCereale", pDV);
+                    insertCmd.Parameters.AddWithValue("@cartofi", 0);
+                    insertCmd.Parameters.AddWithValue("@alteLegume", 0);
+                    insertCmd.Parameters.AddWithValue("@legumeUscate", legUscate);
+                    insertCmd.Parameters.AddWithValue("@fructe", 0);
+                    insertCmd.Parameters.AddWithValue("@zaharuri", 0);
+                    insertCmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("A aparut o eroare: " + ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        conn.Close();
+                    }
+                }       
+        }
+
         public void MeniuDejun()
         {
             MicDejunData lmd = new MicDejunData();
@@ -593,7 +763,6 @@ namespace Aplicatie_Meniu_Gradinita9
             List<GustareData> gustareData = lgd.ListaGustareData();
             ListaGustare = string.Join(" gr " + "\n" + "\n", gustareData.Select(item => item.ToString()));
         }
-
                 private void generarePDF_btn_Click(object sender, EventArgs e)
 
                 {
@@ -611,14 +780,9 @@ namespace Aplicatie_Meniu_Gradinita9
                         return;
 
                     }
-
-            
-
                     MeniuPDF document = new MeniuPDF(this);
 
                     document.GeneratePdfAndShow();
-           // ClearField();
-            
         }
         public void ClearField()
         {

@@ -23,7 +23,6 @@ namespace Aplicatie_Meniu_Gradinita9
             public string TipFel { get; set; }//8
 
 
-        // SqlConnection connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True");
         string dbPath;
         string connectionString;
         SqlConnection connection;

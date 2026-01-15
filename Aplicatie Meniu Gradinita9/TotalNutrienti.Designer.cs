@@ -58,6 +58,11 @@
             DataGridViewCellStyle dataGridViewCellStyle28 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle29 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle30 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle31 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle32 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle33 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle34 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle35 = new DataGridViewCellStyle();
             proteineData = new DataGridView();
             panel1 = new Panel();
             dataToday_lbl = new Label();
@@ -94,8 +99,11 @@
             fierData = new DataGridView();
             label14 = new Label();
             label15 = new Label();
-            label16 = new Label();
-            label17 = new Label();
+            totalFier_lbl = new Label();
+            totalCalciu_lbl = new Label();
+            grupProduseData = new DataGridView();
+            panel8 = new Panel();
+            label12 = new Label();
             ((System.ComponentModel.ISupportInitialize)proteineData).BeginInit();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -109,6 +117,8 @@
             panel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)calciuData).BeginInit();
             ((System.ComponentModel.ISupportInitialize)fierData).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)grupProduseData).BeginInit();
+            panel8.SuspendLayout();
             SuspendLayout();
             // 
             // proteineData
@@ -158,6 +168,7 @@
             dataGridViewCellStyle5.ForeColor = Color.Black;
             dataGridViewCellStyle5.SelectionBackColor = Color.DodgerBlue;
             proteineData.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            proteineData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             proteineData.Size = new Size(404, 160);
             proteineData.TabIndex = 2;
             proteineData.CellContentClick += proteineData_CellContentClick;
@@ -285,6 +296,7 @@
             dataGridViewCellStyle10.ForeColor = Color.Black;
             dataGridViewCellStyle10.SelectionBackColor = Color.DodgerBlue;
             lipideData.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            lipideData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             lipideData.Size = new Size(404, 160);
             lipideData.TabIndex = 2;
             lipideData.CellContentClick += lipideData_CellContentClick;
@@ -394,6 +406,7 @@
             dataGridViewCellStyle15.ForeColor = Color.Black;
             dataGridViewCellStyle15.SelectionBackColor = Color.DodgerBlue;
             glucideData.RowsDefaultCellStyle = dataGridViewCellStyle15;
+            glucideData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             glucideData.Size = new Size(404, 160);
             glucideData.TabIndex = 2;
             glucideData.CellContentClick += glucideData_CellContentClick;
@@ -467,6 +480,7 @@
             dataGridViewCellStyle20.ForeColor = Color.Black;
             dataGridViewCellStyle20.SelectionBackColor = Color.DodgerBlue;
             caloriiData.RowsDefaultCellStyle = dataGridViewCellStyle20;
+            caloriiData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             caloriiData.Size = new Size(404, 160);
             caloriiData.TabIndex = 2;
             caloriiData.CellContentClick += caloriiData_CellContentClick;
@@ -694,6 +708,7 @@
             dataGridViewCellStyle25.ForeColor = Color.Black;
             dataGridViewCellStyle25.SelectionBackColor = Color.DodgerBlue;
             calciuData.RowsDefaultCellStyle = dataGridViewCellStyle25;
+            calciuData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             calciuData.Size = new Size(404, 160);
             calciuData.TabIndex = 2;
             calciuData.CellContentClick += calciuData_CellContentClick;
@@ -745,6 +760,7 @@
             dataGridViewCellStyle30.ForeColor = Color.Black;
             dataGridViewCellStyle30.SelectionBackColor = Color.DodgerBlue;
             fierData.RowsDefaultCellStyle = dataGridViewCellStyle30;
+            fierData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             fierData.Size = new Size(404, 160);
             fierData.TabIndex = 2;
             fierData.CellContentClick += fierData_CellContentClick;
@@ -774,29 +790,103 @@
             label15.TabIndex = 4;
             label15.Text = "TF";
             // 
-            // label16
+            // totalFier_lbl
             // 
-            label16.AutoSize = true;
-            label16.BackColor = Color.White;
-            label16.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label16.ForeColor = Color.Blue;
-            label16.Location = new Point(806, 738);
-            label16.Name = "label16";
-            label16.Size = new Size(15, 15);
-            label16.TabIndex = 4;
-            label16.Text = "?";
+            totalFier_lbl.AutoSize = true;
+            totalFier_lbl.BackColor = Color.White;
+            totalFier_lbl.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            totalFier_lbl.ForeColor = Color.Blue;
+            totalFier_lbl.Location = new Point(806, 738);
+            totalFier_lbl.Name = "totalFier_lbl";
+            totalFier_lbl.Size = new Size(15, 15);
+            totalFier_lbl.TabIndex = 4;
+            totalFier_lbl.Text = "?";
             // 
-            // label17
+            // totalCalciu_lbl
             // 
-            label17.AutoSize = true;
-            label17.BackColor = Color.White;
-            label17.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label17.ForeColor = Color.Blue;
-            label17.Location = new Point(385, 738);
-            label17.Name = "label17";
-            label17.Size = new Size(15, 15);
-            label17.TabIndex = 4;
-            label17.Text = "?";
+            totalCalciu_lbl.AutoSize = true;
+            totalCalciu_lbl.BackColor = Color.White;
+            totalCalciu_lbl.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            totalCalciu_lbl.ForeColor = Color.Blue;
+            totalCalciu_lbl.Location = new Point(385, 738);
+            totalCalciu_lbl.Name = "totalCalciu_lbl";
+            totalCalciu_lbl.Size = new Size(15, 15);
+            totalCalciu_lbl.TabIndex = 4;
+            totalCalciu_lbl.Text = "?";
+            // 
+            // grupProduseData
+            // 
+            grupProduseData.AllowUserToAddRows = false;
+            grupProduseData.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle31.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle31.BackColor = Color.White;
+            dataGridViewCellStyle31.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle31.ForeColor = Color.Black;
+            dataGridViewCellStyle31.SelectionBackColor = Color.DodgerBlue;
+            dataGridViewCellStyle31.SelectionForeColor = Color.White;
+            grupProduseData.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle31;
+            grupProduseData.BackgroundColor = Color.FromArgb(184, 163, 232);
+            dataGridViewCellStyle32.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle32.BackColor = Color.FromArgb(33, 11, 97);
+            dataGridViewCellStyle32.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle32.ForeColor = Color.White;
+            dataGridViewCellStyle32.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle32.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle32.WrapMode = DataGridViewTriState.True;
+            grupProduseData.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle32;
+            grupProduseData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle33.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle33.BackColor = Color.White;
+            dataGridViewCellStyle33.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle33.ForeColor = Color.Black;
+            dataGridViewCellStyle33.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle33.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle33.WrapMode = DataGridViewTriState.False;
+            grupProduseData.DefaultCellStyle = dataGridViewCellStyle33;
+            grupProduseData.EnableHeadersVisualStyles = false;
+            grupProduseData.Location = new Point(35, 780);
+            grupProduseData.Name = "grupProduseData";
+            grupProduseData.ReadOnly = true;
+            dataGridViewCellStyle34.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle34.BackColor = Color.Gold;
+            dataGridViewCellStyle34.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle34.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle34.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle34.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle34.WrapMode = DataGridViewTriState.True;
+            grupProduseData.RowHeadersDefaultCellStyle = dataGridViewCellStyle34;
+            dataGridViewCellStyle35.BackColor = Color.White;
+            dataGridViewCellStyle35.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle35.ForeColor = Color.Black;
+            dataGridViewCellStyle35.SelectionBackColor = Color.DodgerBlue;
+            grupProduseData.RowsDefaultCellStyle = dataGridViewCellStyle35;
+            grupProduseData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            grupProduseData.Size = new Size(825, 160);
+            grupProduseData.TabIndex = 2;
+            grupProduseData.CellContentClick += grupProduseData_CellContentClick;
+            grupProduseData.CellEnter += grupProduseData_CellContentClick;
+            // 
+            // panel8
+            // 
+            panel8.BackColor = Color.White;
+            panel8.Controls.Add(label12);
+            panel8.Location = new Point(38, 741);
+            panel8.Name = "panel8";
+            panel8.Size = new Size(228, 36);
+            panel8.TabIndex = 0;
+            // 
+            // label12
+            // 
+            label12.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label12.AutoSize = true;
+            label12.BackColor = Color.White;
+            label12.Font = new Font("Tahoma", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label12.ForeColor = Color.Black;
+            label12.Location = new Point(3, 18);
+            label12.Name = "label12";
+            label12.Size = new Size(102, 16);
+            label12.TabIndex = 5;
+            label12.Text = "GRUP PRODUSE";
             // 
             // TotalNutrienti
             // 
@@ -806,9 +896,9 @@
             BackColor = SystemColors.ButtonHighlight;
             Controls.Add(lipideData);
             Controls.Add(sterge_btn);
-            Controls.Add(label17);
+            Controls.Add(totalCalciu_lbl);
             Controls.Add(totalGlucide_lbl);
-            Controls.Add(label16);
+            Controls.Add(totalFier_lbl);
             Controls.Add(totalCalorii_lbl);
             Controls.Add(totalLipide_lbl);
             Controls.Add(label7);
@@ -820,6 +910,7 @@
             Controls.Add(totalProteine_lbl);
             Controls.Add(fierData);
             Controls.Add(caloriiData);
+            Controls.Add(grupProduseData);
             Controls.Add(calciuData);
             Controls.Add(glucideData);
             Controls.Add(data_lbl);
@@ -827,13 +918,14 @@
             Controls.Add(panel3);
             Controls.Add(panel7);
             Controls.Add(panel5);
+            Controls.Add(panel8);
             Controls.Add(panel6);
             Controls.Add(panel4);
             Controls.Add(data_txt);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "TotalNutrienti";
-            Size = new Size(982, 779);
+            Size = new Size(982, 962);
             Load += TotalNutrienti_Load;
             ((System.ComponentModel.ISupportInitialize)proteineData).EndInit();
             panel1.ResumeLayout(false);
@@ -855,6 +947,9 @@
             panel7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)calciuData).EndInit();
             ((System.ComponentModel.ISupportInitialize)fierData).EndInit();
+            ((System.ComponentModel.ISupportInitialize)grupProduseData).EndInit();
+            panel8.ResumeLayout(false);
+            panel8.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -896,7 +991,10 @@
         public DataGridView fierData;
         private Label label14;
         private Label label15;
-        private Label label16;
-        private Label label17;
+        private Label totalFier_lbl;
+        private Label totalCalciu_lbl;
+        public DataGridView grupProduseData;
+        private Panel panel8;
+        private Label label12;
     }
 }

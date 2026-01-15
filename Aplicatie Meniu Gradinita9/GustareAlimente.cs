@@ -139,7 +139,7 @@ namespace Aplicatie_Meniu_Gradinita9
                               ";
             string queryy4 = @"INSERT INTO totalAlimenteGustare  (nume, proteine, lipide, glucide, calorii, scazamant, cantitate, TProteine, TLipide, TGlucide, TCalorii, TCantitate, TNet, tip_meniu, status)
                               SELECT nume, proteine, lipide, glucide, calorii, scazamant, cantitate, TProteine, TLipide, TGlucide, TCalorii, TCantitate, TNet, tip_meniu, status 
-                              FROM cereale p WHERE status = 'Alege' AND (tip_meniu = 'G' OR tip_meniu = 'G+P' OR tip_meniu = 'MD+G')
+                              FROM peste p WHERE status = 'Alege' AND (tip_meniu = 'G' OR tip_meniu = 'G+P' OR tip_meniu = 'MD+G')
                              AND NOT EXISTS ( SELECT 1 FROM totalAlimenteGustare t WHERE t.nume = p.nume);
                               ";
             string queryy5 = @"INSERT INTO totalAlimenteGustare  (nume, proteine, lipide, glucide, calorii, scazamant, cantitate, TProteine, TLipide, TGlucide, TCalorii, TCantitate, TNet, tip_meniu, status)
@@ -301,7 +301,7 @@ namespace Aplicatie_Meniu_Gradinita9
                             WHERE m1.{coloanaNume} <> m.{coloanaNume} OR m1.{coloanaNume2} <> m.{coloanaNume2}";
             string query4 = $@"DELETE m1
                             FROM totalAlimenteGustare m1
-                            JOIN cereale m ON m.nume = m1.nume
+                            JOIN peste m ON m.nume = m1.nume
                             WHERE m1.{coloanaNume} <> m.{coloanaNume} OR m1.{coloanaNume2} <> m.{coloanaNume2}";
             string query5 = $@"DELETE m1
                             FROM totalAlimenteGustare m1

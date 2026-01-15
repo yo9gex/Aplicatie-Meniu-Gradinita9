@@ -16,7 +16,6 @@ namespace Aplicatie_Meniu_Gradinita9
         public string TipFel { get; set; }//8
 
 
-        // SqlConnection connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True");
         string dbPath;
         string connectionString;
         SqlConnection connection;
@@ -136,7 +135,7 @@ namespace Aplicatie_Meniu_Gradinita9
                 try
                 {
                     connection.Open();
-                    string query = "SELECT * FROM cereale WHERE status = 'Alege' AND (tip_meniu = 'P' OR tip_meniu = 'MD+P' OR tip_meniu = 'G+P') ";
+                    string query = "SELECT * FROM peste WHERE status = 'Alege' AND (tip_meniu = 'P' OR tip_meniu = 'MD+P' OR tip_meniu = 'G+P') ";
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         SqlDataReader reader = cmd.ExecuteReader();
@@ -164,7 +163,7 @@ namespace Aplicatie_Meniu_Gradinita9
                 {
                     connection.Close();
                 }
-            } // cereale
+            } // peste
             if (connection.State != ConnectionState.Open)
             {
                 try

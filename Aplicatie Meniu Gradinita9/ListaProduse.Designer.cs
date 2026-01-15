@@ -79,10 +79,10 @@
             pictureBox9 = new PictureBox();
             oua_btn = new Button();
             panel11 = new Panel();
-            cereale_lbl = new Label();
+            peste_lbl = new Label();
             label10 = new Label();
             pictureBox10 = new PictureBox();
-            cereale_btn = new Button();
+            peste_btn = new Button();
             panel12 = new Panel();
             fo_lbl = new Label();
             label9 = new Label();
@@ -725,25 +725,25 @@
             // panel11
             // 
             panel11.BackColor = Color.FromArgb(75, 8, 138);
-            panel11.Controls.Add(cereale_lbl);
+            panel11.Controls.Add(peste_lbl);
             panel11.Controls.Add(label10);
             panel11.Controls.Add(pictureBox10);
-            panel11.Controls.Add(cereale_btn);
+            panel11.Controls.Add(peste_btn);
             panel11.Location = new Point(401, 23);
             panel11.Name = "panel11";
             panel11.Size = new Size(170, 100);
             panel11.TabIndex = 0;
             // 
-            // cereale_lbl
+            // peste_lbl
             // 
-            cereale_lbl.AutoSize = true;
-            cereale_lbl.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cereale_lbl.ForeColor = Color.White;
-            cereale_lbl.Location = new Point(135, 19);
-            cereale_lbl.Name = "cereale_lbl";
-            cereale_lbl.Size = new Size(18, 19);
-            cereale_lbl.TabIndex = 2;
-            cereale_lbl.Text = "0";
+            peste_lbl.AutoSize = true;
+            peste_lbl.Font = new Font("Tahoma", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            peste_lbl.ForeColor = Color.White;
+            peste_lbl.Location = new Point(135, 19);
+            peste_lbl.Name = "peste_lbl";
+            peste_lbl.Size = new Size(18, 19);
+            peste_lbl.TabIndex = 2;
+            peste_lbl.Text = "0";
             // 
             // label10
             // 
@@ -767,22 +767,22 @@
             pictureBox10.TabIndex = 0;
             pictureBox10.TabStop = false;
             // 
-            // cereale_btn
+            // peste_btn
             // 
-            cereale_btn.BackColor = Color.FromArgb(33, 11, 97);
-            cereale_btn.Cursor = Cursors.Hand;
-            cereale_btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(75, 8, 138);
-            cereale_btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(75, 8, 138);
-            cereale_btn.FlatStyle = FlatStyle.Flat;
-            cereale_btn.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cereale_btn.ForeColor = SystemColors.ButtonHighlight;
-            cereale_btn.Location = new Point(1, 69);
-            cereale_btn.Name = "cereale_btn";
-            cereale_btn.Size = new Size(168, 30);
-            cereale_btn.TabIndex = 3;
-            cereale_btn.Text = "Cereale";
-            cereale_btn.UseVisualStyleBackColor = false;
-            cereale_btn.Click += cereale_btn_Click;
+            peste_btn.BackColor = Color.FromArgb(33, 11, 97);
+            peste_btn.Cursor = Cursors.Hand;
+            peste_btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(75, 8, 138);
+            peste_btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(75, 8, 138);
+            peste_btn.FlatStyle = FlatStyle.Flat;
+            peste_btn.Font = new Font("Tahoma", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            peste_btn.ForeColor = SystemColors.ButtonHighlight;
+            peste_btn.Location = new Point(1, 69);
+            peste_btn.Name = "peste_btn";
+            peste_btn.Size = new Size(168, 30);
+            peste_btn.TabIndex = 3;
+            peste_btn.Text = "Peste";
+            peste_btn.UseVisualStyleBackColor = false;
+            peste_btn.Click += peste_btn_Click;
             // 
             // panel12
             // 
@@ -993,7 +993,7 @@
         private System.Windows.Forms.Label pOua_lbl;
         private System.Windows.Forms.PictureBox pictureBox9;
         private System.Windows.Forms.Panel panel11;
-        private System.Windows.Forms.Label cereale_lbl;
+        private System.Windows.Forms.Label peste_lbl;
         private System.Windows.Forms.PictureBox pictureBox10;
         private System.Windows.Forms.Panel panel12;
         private System.Windows.Forms.Label fo_lbl;
@@ -1009,7 +1009,7 @@
         private System.Windows.Forms.Button sucuri_btn;
         private System.Windows.Forms.Button legumeConservate_btn;
         private System.Windows.Forms.Button ulei_btn;
-        private System.Windows.Forms.Button cereale_btn;
+        private System.Windows.Forms.Button peste_btn;
         private System.Windows.Forms.Button oua_btn;
         private System.Windows.Forms.Button oleaginoase_btn;
         private System.Windows.Forms.Button legumeProaspete_btn;

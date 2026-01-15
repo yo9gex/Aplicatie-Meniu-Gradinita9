@@ -12,10 +12,8 @@ using System.Windows.Forms;
 
 namespace Aplicatie_Meniu_Gradinita9
 {
-    public partial class Cereale : UserControl
+    public partial class Peste : UserControl
     {
-        //SqlConnection conn = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
-        //SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True");
         string dbPath;
         string connectionString;
         SqlConnection conn;
@@ -27,25 +25,25 @@ namespace Aplicatie_Meniu_Gradinita9
                 return;
 
             }
-            DisplayCereale();
+            DisplayPeste();
         }
-        public Cereale()
+        public Peste()
         {
             InitializeComponent();
             dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "meniul.mdf");
             connectionString = $"Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename={dbPath};Integrated Security=True;Connect Timeout=30";
             conn = new SqlConnection(connectionString);
-            DisplayCereale();
+            DisplayPeste();
         }
-        public void DisplayCereale()
+        public void DisplayPeste()
         {
-            CerealeData cd = new CerealeData();
-            List<CerealeData> produseList = cd.produseCerealeListData();
-            dataCereale.DataSource = produseList;
+            PesteData pd = new PesteData();
+            List<PesteData> produseList = pd.produsePesteListData();
+            dataPeste.DataSource = produseList;
         }
         private void ClearFields()
         {
-            
+
             numeProdus_txt.Text = "";
             proteine_txt.Text = "";
             lipide_txt.Text = "";
@@ -66,7 +64,7 @@ namespace Aplicatie_Meniu_Gradinita9
         }
         private void clear_btn_Click(object sender, EventArgs e)
         {
-            ClearFields();  
+            ClearFields();
         }
 
         private void sterge_btn_Click(object sender, EventArgs e)
@@ -86,7 +84,7 @@ namespace Aplicatie_Meniu_Gradinita9
                     try
                     {
                         conn.Open();
-                        string query = "DELETE FROM cereale WHERE nume=@NumeProdus";
+                        string query = "DELETE FROM peste WHERE nume=@NumeProdus";
                         string query1 = "DELETE FROM totalAlimenteGustare WHERE nume=@NumeProdus";
                         string query2 = "DELETE FROM totalAlimenteMicDejun WHERE nume=@NumeProdus";
                         string query3 = "DELETE FROM totalAlimentePranz WHERE nume=@NumeProdus";
@@ -158,7 +156,7 @@ namespace Aplicatie_Meniu_Gradinita9
                         conn.Open();
                         DateTime today = DateTime.Today;
 
-                        string query = "UPDATE cereale SET proteine=@Proteine, lipide=@Lipide, glucide=@Glucide, calorii=@Calorii, scazamant=@Scazamant, status=@Status, " +
+                        string query = "UPDATE peste SET proteine=@Proteine, lipide=@Lipide, glucide=@Glucide, calorii=@Calorii, scazamant=@Scazamant, status=@Status, " +
                             "proteine_vegetale=@Proteine_vegetale, proteine_animale=@Proteine_animale, lipide_vegetale=@Lipide_vegetale, lipide_animale=@Lipide_animale, fier=@Fier, calciu=@Calciu, grupa_produse1=@Grupa_produse1, " +
                             "grupa_produse2=@Grupa_produse2, coeficient_echivalent1=@Coeficient_echivalent1, coeficient_echivalent2=@Coeficient_echivalent2 WHERE nume=@NumeProdus";
                         using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -182,7 +180,7 @@ namespace Aplicatie_Meniu_Gradinita9
                             cmd.Parameters.AddWithValue("@Coeficient_echivalent2", coef2_txt.Text.Trim());
 
                             cmd.ExecuteNonQuery();
-                            DisplayCereale();
+                            DisplayPeste();
 
                             MessageBox.Show("Produs actualizat cu succes!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -256,7 +254,7 @@ namespace Aplicatie_Meniu_Gradinita9
                     {
                         conn.Open();
                         // Check if the nume already exists
-                        string checkNume = "SELECT COUNT(*) FROM cereale WHERE nume = @nume";
+                        string checkNume = "SELECT COUNT(*) FROM peste WHERE nume = @nume";
                         using (SqlCommand checkCmd = new SqlCommand(checkNume, conn))
                         {
                             checkCmd.Parameters.AddWithValue("@nume", numeProdus_txt.Text.Trim());
@@ -269,7 +267,7 @@ namespace Aplicatie_Meniu_Gradinita9
                             }
                         }
 
-                        string query = "INSERT INTO cereale (nume, proteine, proteine_vegetale, proteine_animale, lipide, lipide_vegetale, lipide_animale, glucide, fier, calciu, calorii, grupa_produse1, grupa_produse2, coeficient_echivalent1, coeficient_echivalent2, scazamant, cantitate, status) " +
+                        string query = "INSERT INTO peste (nume, proteine, proteine_vegetale, proteine_animale, lipide, lipide_vegetale, lipide_animale, glucide, fier, calciu, calorii, grupa_produse1, grupa_produse2, coeficient_echivalent1, coeficient_echivalent2, scazamant, cantitate, status) " +
                             " VALUES ( @NumeProdus, @Proteine, @Proteine_vegetale, @Proteine_animale, @Lipide, @Lipide_vegetale, @Lipide_animale, @Glucide, @Fier, @Calciu, @Calorii, @Grupa_produse1, @Grupa_produse2, @Coeficient_echivalent1, @Coeficient_echivalent2, @Scazamant, @Cantitate, @Status)";
                         SqlCommand cmd = new SqlCommand(query, conn);
 
@@ -308,11 +306,39 @@ namespace Aplicatie_Meniu_Gradinita9
             }
         }
 
-        private void dataCereale_CellClick(object sender, DataGridViewCellEventArgs e)
+        //private void dataCereale_CellClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (e.RowIndex != -1)
+        //    {
+        //        DataGridViewRow row = dataPeste.Rows[e.RowIndex];
+
+        //        numeProdus_txt.Text = row.Cells[0].Value.ToString();
+        //        proteine_txt.Text = row.Cells[1].Value.ToString();
+        //        protVeg_txt.Text = row.Cells[2].Value.ToString();
+        //        protAnimal_txt.Text = row.Cells[3].Value.ToString();
+        //        lipide_txt.Text = row.Cells[4].Value.ToString();
+        //        lipideVeg_txt.Text = row.Cells[5].Value.ToString();
+        //        lipideAnimal_txt.Text = row.Cells[6].Value.ToString();
+        //        glucide_txt.Text = row.Cells[7].Value.ToString();
+        //        fier_txt.Text = row.Cells[8].Value.ToString();
+        //        calciu_txt.Text = row.Cells[9].Value.ToString();
+        //        calorii_txt.Text = row.Cells[10].Value.ToString();
+        //        scz_txt.Text = row.Cells[11].Value.ToString();
+        //        grup1_txt.Text = row.Cells[13].Value.ToString();
+        //        coef1_txt.Text = row.Cells[14].Value.ToString();
+        //        grup2_txt.Text = row.Cells[15].Value.ToString();
+        //        coef2_txt.Text = row.Cells[16].Value.ToString();
+        //        status_txt.Text = row.Cells[17].Value.ToString();
+
+
+        //    }
+        //}
+
+        private void dataPeste_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex != -1)
             {
-                DataGridViewRow row = dataCereale.Rows[e.RowIndex];
+                DataGridViewRow row = dataPeste.Rows[e.RowIndex];
 
                 numeProdus_txt.Text = row.Cells[0].Value.ToString();
                 proteine_txt.Text = row.Cells[1].Value.ToString();
@@ -331,7 +357,7 @@ namespace Aplicatie_Meniu_Gradinita9
                 grup2_txt.Text = row.Cells[15].Value.ToString();
                 coef2_txt.Text = row.Cells[16].Value.ToString();
                 status_txt.Text = row.Cells[17].Value.ToString();
-               
+
 
             }
         }

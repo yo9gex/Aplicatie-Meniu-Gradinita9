@@ -1,6 +1,6 @@
 ﻿namespace Aplicatie_Meniu_Gradinita9
 {
-    partial class Cereale
+    partial class Peste
     {
         /// <summary> 
         /// Required designer variable.
@@ -35,8 +35,8 @@
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             dateBazaProduseOua_panel = new Panel();
             BazaDateDerivate_lbl = new Label();
-            dataCereale = new DataGridView();
-            oua_lbl = new Label();
+            dataPeste = new DataGridView();
+            peste_lbl = new Label();
             parametriiProdus_panel = new Panel();
             clear_btn = new Button();
             sterge_btn = new Button();
@@ -74,8 +74,10 @@
             proteine_txt = new TextBox();
             scz_txt = new TextBox();
             numeProdus_txt = new TextBox();
+            label6 = new Label();
+            label8 = new Label();
             dateBazaProduseOua_panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataCereale).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataPeste).BeginInit();
             parametriiProdus_panel.SuspendLayout();
             SuspendLayout();
             // 
@@ -84,8 +86,8 @@
             dateBazaProduseOua_panel.BackColor = SystemColors.ButtonHighlight;
             dateBazaProduseOua_panel.BorderStyle = BorderStyle.FixedSingle;
             dateBazaProduseOua_panel.Controls.Add(BazaDateDerivate_lbl);
-            dateBazaProduseOua_panel.Controls.Add(dataCereale);
-            dateBazaProduseOua_panel.Controls.Add(oua_lbl);
+            dateBazaProduseOua_panel.Controls.Add(dataPeste);
+            dateBazaProduseOua_panel.Controls.Add(peste_lbl);
             dateBazaProduseOua_panel.Location = new Point(29, 28);
             dateBazaProduseOua_panel.Name = "dateBazaProduseOua_panel";
             dateBazaProduseOua_panel.Size = new Size(824, 261);
@@ -101,18 +103,18 @@
             BazaDateDerivate_lbl.Size = new Size(0, 19);
             BazaDateDerivate_lbl.TabIndex = 0;
             // 
-            // dataCereale
+            // dataPeste
             // 
-            dataCereale.AllowUserToAddRows = false;
-            dataCereale.AllowUserToDeleteRows = false;
+            dataPeste.AllowUserToAddRows = false;
+            dataPeste.AllowUserToDeleteRows = false;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.TopCenter;
             dataGridViewCellStyle1.BackColor = Color.White;
             dataGridViewCellStyle1.Font = new Font("Arial", 9.75F, FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = Color.Black;
             dataGridViewCellStyle1.SelectionBackColor = Color.DodgerBlue;
             dataGridViewCellStyle1.SelectionForeColor = Color.White;
-            dataCereale.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataCereale.BackgroundColor = Color.FromArgb(184, 163, 232);
+            dataPeste.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataPeste.BackgroundColor = Color.FromArgb(184, 163, 232);
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(33, 11, 97);
             dataGridViewCellStyle2.Font = new Font("Arial", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -120,8 +122,8 @@
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            dataCereale.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            dataCereale.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataPeste.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataPeste.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = Color.Yellow;
             dataGridViewCellStyle3.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -129,11 +131,11 @@
             dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
-            dataCereale.DefaultCellStyle = dataGridViewCellStyle3;
-            dataCereale.EnableHeadersVisualStyles = false;
-            dataCereale.Location = new Point(26, 39);
-            dataCereale.Name = "dataCereale";
-            dataCereale.ReadOnly = true;
+            dataPeste.DefaultCellStyle = dataGridViewCellStyle3;
+            dataPeste.EnableHeadersVisualStyles = false;
+            dataPeste.Location = new Point(26, 39);
+            dataPeste.Name = "dataPeste";
+            dataPeste.ReadOnly = true;
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = Color.Yellow;
             dataGridViewCellStyle4.Font = new Font("Arial Narrow", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -141,31 +143,31 @@
             dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dataCereale.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            dataCereale.RowHeadersVisible = false;
+            dataPeste.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataPeste.RowHeadersVisible = false;
             dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.TopCenter;
             dataGridViewCellStyle5.BackColor = Color.White;
             dataGridViewCellStyle5.Font = new Font("Arial", 9.75F, FontStyle.Bold);
             dataGridViewCellStyle5.ForeColor = Color.Black;
             dataGridViewCellStyle5.SelectionBackColor = Color.Blue;
             dataGridViewCellStyle5.SelectionForeColor = Color.LightGray;
-            dataCereale.RowsDefaultCellStyle = dataGridViewCellStyle5;
-            dataCereale.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataCereale.Size = new Size(778, 209);
-            dataCereale.TabIndex = 1;
-            dataCereale.CellClick += dataCereale_CellClick;
-            dataCereale.CellEnter += dataCereale_CellClick;
+            dataPeste.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataPeste.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataPeste.Size = new Size(778, 209);
+            dataPeste.TabIndex = 1;
+            dataPeste.CellClick += dataPeste_CellClick;
+            dataPeste.CellEnter += dataPeste_CellClick;
             // 
-            // oua_lbl
+            // peste_lbl
             // 
-            oua_lbl.AutoSize = true;
-            oua_lbl.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            oua_lbl.ForeColor = Color.Black;
-            oua_lbl.Location = new Point(26, 12);
-            oua_lbl.Name = "oua_lbl";
-            oua_lbl.Size = new Size(83, 24);
-            oua_lbl.TabIndex = 0;
-            oua_lbl.Text = "Cereale";
+            peste_lbl.AutoSize = true;
+            peste_lbl.Font = new Font("Microsoft Sans Serif", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            peste_lbl.ForeColor = Color.Black;
+            peste_lbl.Location = new Point(26, 12);
+            peste_lbl.Name = "peste_lbl";
+            peste_lbl.Size = new Size(62, 24);
+            peste_lbl.TabIndex = 0;
+            peste_lbl.Text = "Pește";
             // 
             // parametriiProdus_panel
             // 
@@ -188,6 +190,8 @@
             parametriiProdus_panel.Controls.Add(label13);
             parametriiProdus_panel.Controls.Add(label11);
             parametriiProdus_panel.Controls.Add(label7);
+            parametriiProdus_panel.Controls.Add(label8);
+            parametriiProdus_panel.Controls.Add(label6);
             parametriiProdus_panel.Controls.Add(label5);
             parametriiProdus_panel.Controls.Add(label1);
             parametriiProdus_panel.Controls.Add(produsId_lbl);
@@ -571,16 +575,38 @@
             numeProdus_txt.Size = new Size(195, 23);
             numeProdus_txt.TabIndex = 2;
             // 
-            // Cereale
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.Black;
+            label6.Location = new Point(374, 57);
+            label6.Name = "label6";
+            label6.Size = new Size(68, 40);
+            label6.TabIndex = 1;
+            label6.Text = "Proteine\r\nanimale";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label8.ForeColor = Color.Black;
+            label8.Location = new Point(374, 109);
+            label8.Name = "label8";
+            label8.Size = new Size(64, 40);
+            label8.TabIndex = 1;
+            label8.Text = "Lipide\r\nanimale";
+            // 
+            // Peste
             // 
             AutoScaleMode = AutoScaleMode.None;
             Controls.Add(parametriiProdus_panel);
             Controls.Add(dateBazaProduseOua_panel);
-            Name = "Cereale";
+            Name = "Peste";
             Size = new Size(875, 565);
             dateBazaProduseOua_panel.ResumeLayout(false);
             dateBazaProduseOua_panel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataCereale).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataPeste).EndInit();
             parametriiProdus_panel.ResumeLayout(false);
             parametriiProdus_panel.PerformLayout();
             ResumeLayout(false);
@@ -591,7 +617,7 @@
 
         private System.Windows.Forms.Panel dateBazaProduseOua_panel;
         private System.Windows.Forms.Label BazaDateDerivate_lbl;
-        private System.Windows.Forms.Label oua_lbl;
+        private System.Windows.Forms.Label peste_lbl;
         private System.Windows.Forms.Panel parametriiProdus_panel;
         private System.Windows.Forms.Button clear_btn;
         private System.Windows.Forms.Button sterge_btn;
@@ -610,7 +636,7 @@
         private System.Windows.Forms.TextBox proteine_txt;
         private System.Windows.Forms.TextBox scz_txt;
         private System.Windows.Forms.TextBox numeProdus_txt;
-        public DataGridView dataCereale;
+        public DataGridView dataPeste;
         private Label label10;
         private Label label9;
         private Label scz_lbl;
@@ -630,5 +656,7 @@
         private TextBox grup2_txt;
         private TextBox coef1_txt;
         private TextBox grup1_txt;
+        private Label label8;
+        private Label label6;
     }
 }

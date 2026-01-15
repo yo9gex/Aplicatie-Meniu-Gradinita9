@@ -92,7 +92,8 @@ namespace Aplicatie_Meniu_Gradinita9
             mz.MeniuPranzFel1();
             mz.MeniuPranzFel2();
             NecesarAlimente na = new NecesarAlimente();
-            na.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            na.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
                 na.GetTotalCantitate_lbl());
 
             MicDejunAlimente md = new MicDejunAlimente();

@@ -113,7 +113,7 @@ namespace Aplicatie_Meniu_Gradinita9
             CantitateFructe();
             CantitateLegumeProaspete();
             CantitateOleaginoase();
-            CantitateCereale();
+            CantitatePeste();
 
         }
         // Clear button click event to clear text fields
@@ -176,7 +176,7 @@ namespace Aplicatie_Meniu_Gradinita9
             CantitateFructe();
             CantitateLegumeProaspete();
             CantitateOleaginoase();
-            CantitateCereale();
+            CantitatePeste();
             RefreshData();
             
         }
@@ -211,7 +211,7 @@ namespace Aplicatie_Meniu_Gradinita9
                             string updateData9 = "UPDATE fructe SET cantitate=@cantitate, tip_meniu = @tip_meniu WHERE nume = @nume ";
                             string updateData10 = "UPDATE legumeProaspete SET cantitate=@cantitate, tip_meniu = @tip_meniu WHERE nume = @nume ";
                             string updateData11 = "UPDATE fructeOleaginoase SET cantitate=@cantitate, tip_meniu = @tip_meniu WHERE nume = @nume ";
-                            string updateData12 = "UPDATE cereale SET cantitate=@cantitate, tip_meniu = @tip_meniu WHERE nume = @nume ";
+                            string updateData12 = "UPDATE peste SET cantitate=@cantitate, tip_meniu = @tip_meniu WHERE nume = @nume ";
 
                             using (SqlCommand cmd = new SqlCommand(updateData, connection))
                             {
@@ -286,7 +286,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale,
+                            decimal TotalLipide, decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii, decimal TCoeficient1, decimal TCoeficient2)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -294,12 +295,18 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
                             decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
                             decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
+                            decimal tCoeficient1Tabela = reader.GetDecimal(reader.GetOrdinal("coeficient_echivalent1"));
+                            decimal tCoeficient2Tabela = reader.GetDecimal(reader.GetOrdinal("coeficient_echivalent2"));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela, tCoeficient1Tabela, tCoeficient2Tabela));
                         }
 
                         reader.Close();
@@ -310,26 +317,39 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
                             decimal fierTotal = totalNet * produs.TotalFier / 100;
                             decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
+                            decimal tCoeficient1Total = totalNet * produs.TCoeficient1 ;
+                            decimal tCoeficient2Total = totalNet * produs.TCoeficient2 ;
 
 
 
-                            string updateQuery = "UPDATE produseDerivateCereale SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege'  AND nume = @nume";
+                            string updateQuery = "UPDATE produseDerivateCereale SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale," +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale, TCoeficient1 = @tCoeficient1, TCoeficient2 = @tCoeficient2 WHERE status = 'Alege'  AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
                                 updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
                                 updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
+                                updateCommand.Parameters.AddWithValue("@tCoeficient1", tCoeficient1Total);  
+                                updateCommand.Parameters.AddWithValue("@tCoeficient2", tCoeficient2Total);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
                             }
@@ -360,7 +380,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -368,10 +389,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -382,20 +409,33 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
 
-                            string updateQuery = "UPDATE oua SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE oua SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale," +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -423,7 +463,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -431,10 +472,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -445,18 +492,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
-                            string updateQuery = "UPDATE ulei SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+
+                            string updateQuery = "UPDATE ulei SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale," +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -487,7 +548,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -495,10 +557,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
                         reader.Close();
                         foreach (var produs in produse)
@@ -507,19 +575,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-                            string updateQuery = "UPDATE legumeConservate SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE legumeConservate SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale," +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -549,7 +630,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -557,10 +639,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -571,18 +659,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
-                            string updateQuery = "UPDATE produseZaharoase SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+
+                            string updateQuery = "UPDATE produseZaharoase SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -615,7 +717,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -623,10 +726,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -637,22 +746,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-
-
-
-                            string updateQuery = "UPDATE carneProduseCarne SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE carneProduseCarne SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -686,7 +805,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -694,10 +814,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -708,19 +834,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-                            string updateQuery = "UPDATE laptePreparateLapte SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE laptePreparateLapte SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -753,7 +892,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -761,10 +901,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -775,19 +921,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-                            string updateQuery = "UPDATE sucuriCompoturi SET TCantitate = @cantitateTotala, TNet=@totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE sucuriCompoturi SET TCantitate = @cantitateTotala, TNet=@totalNet, TProteine = @proteineTotale,TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -820,7 +979,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -828,10 +988,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -842,19 +1008,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-                            string updateQuery = "UPDATE fructe SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE fructe SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -887,7 +1066,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -895,10 +1075,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -909,19 +1095,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-                            string updateQuery = "UPDATE legumeProaspete SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE legumeProaspete SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -955,7 +1154,8 @@ namespace Aplicatie_Meniu_Gradinita9
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -963,10 +1163,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -977,19 +1183,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-                            string updateQuery = "UPDATE fructeOleaginoase SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE fructeOleaginoase SET TCantitate = @cantitateTotala, TNet = @totalNet, TProteine = @proteineTotale, TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -1008,7 +1227,7 @@ namespace Aplicatie_Meniu_Gradinita9
 
             // CalculeazaParametri(out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, GetTotalCantitate_lbl());
         }
-        public void CantitateCereale()
+        public void CantitatePeste()
         {
             int nrTotalCopii = numarCopii;
             // Open a connection to the database cereale
@@ -1018,11 +1237,12 @@ namespace Aplicatie_Meniu_Gradinita9
                 try
                 {
                     connection.Open();
-                    string query = "Select * FROM cereale WHERE status = 'Alege' ";
+                    string query = "Select * FROM peste WHERE status = 'Alege' ";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalLipide, decimal TotalGlucide, decimal TotalCalorii)>();
+                        var produse = new List<(string Nume, decimal Cantitate, decimal TotalNet, decimal TotalProteine, decimal TotalProteineVegetale, decimal TotalProteineAnimale, decimal TotalLipide,
+                            decimal TotalLipideVegetale, decimal TotalLipideAnimale, decimal TotalGlucide, decimal TotalFier, decimal TotalCalciu, decimal TotalCalorii)>();
                         while (reader.Read())
                         {
                             string nume = reader["nume"].ToString();
@@ -1030,10 +1250,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal cantitateaDinTabela = reader.GetDecimal(reader.GetOrdinal("cantitate"));
                             decimal scazamantTabela = reader.GetDecimal(reader.GetOrdinal("scazamant"));
                             decimal proteineTabela = reader.GetDecimal(reader.GetOrdinal("proteine"));
+                            decimal proteineVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_vegetale"));
+                            decimal proteineAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("proteine_animale"));
                             decimal lipideTabela = reader.GetDecimal(reader.GetOrdinal("lipide"));
+                            decimal lipideVegetaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_vegetale"));
+                            decimal lipideAnimaleTabela = reader.GetDecimal(reader.GetOrdinal("lipide_animale"));
                             decimal glucideTabela = reader.GetDecimal(reader.GetOrdinal("glucide"));
+                            decimal fierTabela = reader.GetDecimal(reader.GetOrdinal("fier"));
+                            decimal calciuTabela = reader.GetDecimal(reader.GetOrdinal("calciu"));
                             decimal caloriiTabela = reader.GetDecimal(reader.GetOrdinal("calorii"));
-                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, lipideTabela, glucideTabela, caloriiTabela));
+                            produse.Add((nume, cantitateaDinTabela, scazamantTabela, proteineTabela, proteineVegetaleTabela, proteineAnimaleTabela, lipideTabela, lipideVegetaleTabela, lipideAnimaleTabela, glucideTabela, fierTabela, calciuTabela, caloriiTabela));
                         }
 
                         reader.Close();
@@ -1044,19 +1270,32 @@ namespace Aplicatie_Meniu_Gradinita9
                             decimal scazamantTotal = cantitateTotala - (cantitateTotala * (produs.TotalNet));
                             decimal totalNet = scazamantTotal;
                             decimal proteineTotale = totalNet * produs.TotalProteine / 100;
+                            decimal proteineVegetaleTotale = totalNet * produs.TotalProteineVegetale / 100;
+                            decimal proteineAnimaleTotale = totalNet * produs.TotalProteineAnimale / 100;
                             decimal lipideTotale = totalNet * produs.TotalLipide / 100;
+                            decimal lipideVegetaleTotale = totalNet * produs.TotalLipideVegetale / 100;
+                            decimal lipideAnimaleTotale = totalNet * produs.TotalLipideAnimale / 100;
                             decimal glucideTotale = totalNet * produs.TotalGlucide / 100;
+                            decimal fierTotal = totalNet * produs.TotalFier / 100;
+                            decimal calciuTotal = totalNet * produs.TotalCalciu / 100;
                             decimal caloriiTotale = totalNet * produs.TotalCalorii / 100;
 
-                            string updateQuery = "UPDATE cereale SET TCantitate = @cantitateTotala, TNet = @TotalNet, TProteine = @proteineTotale, TLipide = @lipideTotale, TGlucide = @glucideTotale, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
+                            string updateQuery = "UPDATE peste SET TCantitate = @cantitateTotala, TNet = @TotalNet, TProteine = @proteineTotale,TProteineVegetale = @proteineVegetaleTotale, TProteineAnimale = @proteineAnimaleTotale, TLipide = @lipideTotale, " +
+                                "TLipideVegetale = @lipideVegetaleTotale, TLipideAnimale =@lipideAnimaleTotale, TGlucide = @glucideTotale, TFier = @fierTotal, TCalciu = @calciuTotal, TCalorii = @caloriiTotale WHERE status = 'Alege' AND nume = @nume";
                             using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                             {
                                 updateCommand.Parameters.AddWithValue("@cantitateTotala", cantitateTotala);
                                 updateCommand.Parameters.AddWithValue("@nume", produs.Nume);
                                 updateCommand.Parameters.AddWithValue("@totalNet", totalNet);
                                 updateCommand.Parameters.AddWithValue("@proteineTotale", proteineTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineVegetaleTotale", proteineVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@proteineAnimaleTotale", proteineAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@lipideTotale", lipideTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideVegetaleTotale", lipideVegetaleTotale);
+                                updateCommand.Parameters.AddWithValue("@lipideAnimaleTotale", lipideAnimaleTotale);
                                 updateCommand.Parameters.AddWithValue("@glucideTotale", glucideTotale);
+                                updateCommand.Parameters.AddWithValue("@fierTotal", fierTotal);
+                                updateCommand.Parameters.AddWithValue("@calciuTotal", calciuTotal);
                                 updateCommand.Parameters.AddWithValue("@caloriiTotale", caloriiTotale);
                                 updateCommand.ExecuteNonQuery();
                                 DisplayNecesarAlimente();
@@ -1072,7 +1311,8 @@ namespace Aplicatie_Meniu_Gradinita9
             }
             // Clear the number of children text box after processing
 
-            CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide, GetTotalCantitate_lbl());
+            CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide, GetTotalCantitate_lbl());
             
         }
        
@@ -1081,18 +1321,26 @@ namespace Aplicatie_Meniu_Gradinita9
             return totalCantitate_lbl;
         }
         // Method to calculate and display total parameters in the labels
-        public void CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide, Label totalCantitate_lbl)
+        public void CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+            out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide, Label totalCantitate_lbl)
         {
             numarCopiiTotal = numarCopii;
-            tBrut = "0.00";
-            tC = "0.00";
-            tP = "0.00";
-            tL = "0.00";
-            tG = "0.00";
-            tCal = "0.00";
-            procentProteine = "0.00";
-            procentLipide = "0.00";
-            procentGlucide = "0.00";
+            tBrut = "0.00"; //total brut
+            tC = "0.00"; // total cantitate neta
+            tP = "0.00"; // total proteine
+            tP_veg = "0.00"; // total proteine vegetale
+            tP_anim = "0.00"; // total proteine animale
+            tL = "0.00"; // total lipide
+            tL_veg = "0.00"; // total lipide vegetale
+            tL_anim = "0.00"; // total lipide animale
+            tG = "0.00"; // total glucide
+            tFier = "0.00"; // total fier
+            tCalciu = "0.00"; // total calciu
+            tCal = "0.00"; // total calorii
+
+            procentProteine = "0.00"; // procent proteine
+            procentLipide = "0.00"; // procent lipide
+            procentGlucide = "0.00"; // procent glucide
 
             totalCantitateB_lbl.Text = "0.00";
             totalCantitate_lbl.Text = "0.00";
@@ -1100,6 +1348,13 @@ namespace Aplicatie_Meniu_Gradinita9
             tLipide_lbl.Text = "0.00";
             tGlucide_lbl.Text = "0.00";
             tCalorii_lbl.Text = "0.00";
+
+            string tP_vegetal = "0.00"; // total proteine vegetale
+            string tP_animal = "0.00"; // total proteine animale
+            string tL_vegetal = "0.00"; // total lipide vegetale
+            string tL_animal = "0.00"; // total lipide animale
+            string tFF = "0.00"; // total fier
+            string tCalcc = "0.00"; // total calciu
 
             procentProteine_lbl.Text = "0.00";
             procentLipide_lbl.Text = "0.00";
@@ -1109,34 +1364,69 @@ namespace Aplicatie_Meniu_Gradinita9
                 {
                 // C#
                 
-                    object cell3 = dataNecesarAlimente.Rows[i].Cells[3].Value;
-                    object cell4 = dataNecesarAlimente.Rows[i].Cells[4].Value;
-                    object cell5 = dataNecesarAlimente.Rows[i].Cells[5].Value;
-                    object cell6 = dataNecesarAlimente.Rows[i].Cells[6].Value;
-                    object cell7 = dataNecesarAlimente.Rows[i].Cells[7].Value;
-                    object cell8 = dataNecesarAlimente.Rows[i].Cells[8].Value;
+                    object cell3 = dataNecesarAlimente.Rows[i].Cells[3].Value; // cantitate brută
+                    object cell4 = dataNecesarAlimente.Rows[i].Cells[4].Value; // cantitate neta
+                    object cell5 = dataNecesarAlimente.Rows[i].Cells[5].Value; // proteine
+                    object cell6 = dataNecesarAlimente.Rows[i].Cells[6].Value; // proteine vegetale
+                    object cell7 = dataNecesarAlimente.Rows[i].Cells[7].Value; // proteine animale
+                    object cell8 = dataNecesarAlimente.Rows[i].Cells[8].Value; // lipide
+                    object cell9 = dataNecesarAlimente.Rows[i].Cells[9].Value; // lipide vegetale
+                    object cell10 = dataNecesarAlimente.Rows[i].Cells[10].Value; // lipide animale
+                    object cell11 = dataNecesarAlimente.Rows[i].Cells[11].Value; // glucide
+                    object cell12 = dataNecesarAlimente.Rows[i].Cells[12].Value; // fier
+                    object cell13 = dataNecesarAlimente.Rows[i].Cells[13].Value; // calciu
+                    object cell14 = dataNecesarAlimente.Rows[i].Cells[14].Value; // calorii
 
-                    decimal val3 = 0m, val4 = 0m, val5 = 0m, val6 = 0m, val7 = 0m, val8 = 0m;
+                decimal val3 = 0m, val4 = 0m, val5 = 0m, val6 = 0m, val7 = 0m, val8 = 0m, val9 = 0m, val10 = 0m, val11 = 0m, val12 = 0m, val13 = 0m, val14 = 0m;
 
                     decimal.TryParse(totalCantitateB_lbl.Text, out decimal totalCantB) ;
                     decimal.TryParse(Convert.ToString(cell3 ?? "0"),out val3);
+
                     decimal.TryParse(totalCantitate_lbl.Text, out decimal totalCant);
                     decimal.TryParse(Convert.ToString(cell4 ?? "0"), out val4);
+
                     decimal.TryParse(tProteine_lbl.Text, out decimal totalProt);
                     decimal.TryParse(Convert.ToString(cell5 ?? "0"), out val5);
-                    decimal.TryParse(tLipide_lbl.Text, out decimal totalLip);
+
+                    decimal.TryParse(tP_vegetal, out decimal totalProt_veg);
                     decimal.TryParse(Convert.ToString(cell6 ?? "0"), out val6);
-                    decimal.TryParse(tGlucide_lbl.Text, out decimal totalGluc);
+                
+                    decimal.TryParse(tP_animal, out decimal totalProt_anim);
                     decimal.TryParse(Convert.ToString(cell7 ?? "0"), out val7);
-                    decimal.TryParse(tCalorii_lbl.Text, out decimal totalCalVal);
+                
+                    decimal.TryParse(tLipide_lbl.Text, out decimal totalLip);
                     decimal.TryParse(Convert.ToString(cell8 ?? "0"), out val8);
 
-                    totalCantB += val3;
-                    totalCant += val4;
-                    totalProt += val5;
-                    totalLip += val6;
-                    totalGluc += val7;
-                    totalCalVal += val8;
+                    decimal.TryParse(tL_vegetal, out decimal totalLip_veg);
+                    decimal.TryParse(Convert.ToString(cell9 ?? "0"), out val9);
+
+                    decimal.TryParse(tL_animal, out decimal totalLip_anim);
+                    decimal.TryParse(Convert.ToString(cell10 ?? "0"), out val10);
+
+                    decimal.TryParse(tGlucide_lbl.Text, out decimal totalGluc);
+                    decimal.TryParse(Convert.ToString(cell11 ?? "0"), out val11);
+
+                    decimal.TryParse(tFF, out decimal tF);
+                    decimal.TryParse(Convert.ToString(cell12 ?? "0"), out val12);
+
+                   decimal.TryParse(tCalcc, out decimal tCalc);
+                   decimal.TryParse(Convert.ToString(cell13 ?? "0"), out val13);
+
+                   decimal.TryParse(tCalorii_lbl.Text, out decimal totalCalVal);
+                   decimal.TryParse(Convert.ToString(cell14 ?? "0"), out val14);
+
+                    totalCantB += val3; // total cantitate brută
+                    totalCant += val4; // total cantitate neta
+                    totalProt += val5; // total proteine
+                    totalProt_veg += val6; // total proteine vegetale
+                    totalProt_anim += val7; // total proteine animale
+                    totalLip += val8; // total lipide
+                    totalLip_veg += val9; // total lipide vegetale
+                    totalLip_anim += val10; // total lipide animale
+                    totalGluc += val11; // total glucide
+                    tF += val12; // total fier
+                    tCalc += val13; // total calciu
+                    totalCalVal += val14; // total calorii
 
                     totalCantitateB_lbl.Text = totalCantB.ToString("0.00");
                     totalCantitate_lbl.Text = totalCant.ToString("0.00");
@@ -1145,15 +1435,30 @@ namespace Aplicatie_Meniu_Gradinita9
                     tGlucide_lbl.Text = totalGluc.ToString("0.00");
                     tCalorii_lbl.Text = totalCalVal.ToString("0.00");
 
-                    tBrut = totalCantitateB_lbl.Text;
+                    tP_vegetal = totalProt_veg.ToString("0.00");
+                    tP_animal = totalProt_anim.ToString("0.00");
+                    tL_vegetal = totalLip_veg.ToString("0.00");
+                    tL_animal = totalLip_anim.ToString("0.00"); 
+                    tFF = tF.ToString("0.00");
+                    tCalcc = tCalc.ToString("0.00");
+
+
+                    tBrut = totalCantitateB_lbl.Text;  // total brut
                     tC = totalCantitate_lbl.Text;
                     tP = tProteine_lbl.Text;
                     tL = tLipide_lbl.Text;
                     tG = tGlucide_lbl.Text;
                     tCal = tCalorii_lbl.Text;
-                          
+
+                   tP_veg = tP_vegetal; // total proteine vegetale
+                   tP_anim = tP_animal; // total proteine animale
+                   tL_veg = tL_vegetal; // total lipide vegetale
+                   tL_anim = tL_animal; // total lipide animale
+                   tFier = tFF; // total fier
+                   tCalciu = tCalcc; // total calciu
+
                 // compute percentages safely (check totalCalVal > 0) ...
-            
+
                 if (
                    totalCalVal != 0)
 
@@ -1182,18 +1487,18 @@ namespace Aplicatie_Meniu_Gradinita9
                 try
                 {
                     connection.Open();
-                    string resetData = "UPDATE produseDerivateCereale SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData2 = "UPDATE produseZaharoase SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData3 = "UPDATE carneProduseCarne SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData4 = "UPDATE laptePreparateLapte SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData5 = "UPDATE sucuriCompoturi SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData6 = "UPDATE fructe SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData7 = "UPDATE ulei SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData8 = "UPDATE legumeConservate SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData9 = "UPDATE legumeProaspete SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData10 = "UPDATE fructeOleaginoase SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData11 = "UPDATE cereale SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
-                    string resetData12 = "UPDATE oua SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TLipide=@TLipide, TGlucide=@TGlucide, TCalorii=@TCalorii WHERE status = 'Alege' ";
+                    string resetData = "UPDATE produseDerivateCereale SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide, TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData2 = "UPDATE produseZaharoase SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData3 = "UPDATE carneProduseCarne SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData4 = "UPDATE laptePreparateLapte SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData5 = "UPDATE sucuriCompoturi SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData6 = "UPDATE fructe SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData7 = "UPDATE ulei SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine, TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData8 = "UPDATE legumeConservate SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData9 = "UPDATE legumeProaspete SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData10 = "UPDATE fructeOleaginoase SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData11 = "UPDATE peste SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
+                    string resetData12 = "UPDATE oua SET status=@nume, tip_meniu=@tip_meniu, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE status = 'Alege' ";
 
                     using (SqlCommand cmd = new SqlCommand(resetData, connection))
                     {
@@ -1203,9 +1508,17 @@ namespace Aplicatie_Meniu_Gradinita9
                         cmd.Parameters.AddWithValue("@TCantitate", 0.00);
                         cmd.Parameters.AddWithValue("@TNet", 0.00);
                         cmd.Parameters.AddWithValue("@TProteine", 0.00);
+                        cmd.Parameters.AddWithValue("@TProteineVegetale", 0.00);
+                        cmd.Parameters.AddWithValue("@TProteineAnimale", 0.00);
                         cmd.Parameters.AddWithValue("@TLipide", 0.00);
+                        cmd.Parameters.AddWithValue("@TLipideVegetale", 0.00);
+                        cmd.Parameters.AddWithValue("@TLipideAnimale", 0.00);
                         cmd.Parameters.AddWithValue("@TGlucide", 0.00);
+                        cmd.Parameters.AddWithValue("@TFier", 0.00);
+                        cmd.Parameters.AddWithValue("@TCalciu", 0.00);
                         cmd.Parameters.AddWithValue("@TCalorii", 0.00);
+                        cmd.Parameters.AddWithValue("@TCoeficient1", 0.00);
+                        cmd.Parameters.AddWithValue("@TCoeficient2", 0.00);
 
 
                         var resetCommands = new List<SqlCommand>
@@ -1231,9 +1544,17 @@ namespace Aplicatie_Meniu_Gradinita9
                             command.Parameters.AddWithValue("@TCantitate", 0.00);
                             command.Parameters.AddWithValue("@TNet", 0.00);
                             command.Parameters.AddWithValue("@TProteine", 0.00);
+                            command.Parameters.AddWithValue("@TProteineVegetale", 0.00);
+                            command.Parameters.AddWithValue("@TProteineAnimale", 0.00);
                             command.Parameters.AddWithValue("@TLipide", 0.00);
+                            command.Parameters.AddWithValue("@TLipideVegetale", 0.00);
+                            command.Parameters.AddWithValue("@TLipideAnimale", 0.00);
                             command.Parameters.AddWithValue("@TGlucide", 0.00);
+                            command.Parameters.AddWithValue("@TFier", 0.00);
+                            command.Parameters.AddWithValue("@TCalciu", 0.00);
                             command.Parameters.AddWithValue("@TCalorii", 0.00);
+                            command.Parameters.AddWithValue("@TCoeficient1", 0.00);
+                            command.Parameters.AddWithValue("@TCoeficient2", 0.00);
                             command.ExecuteNonQuery();
                         }
 

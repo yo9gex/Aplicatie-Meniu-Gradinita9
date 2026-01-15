@@ -143,7 +143,7 @@ namespace Aplicatie_Meniu_Gradinita9
                               ";
             string queryy4 = @"INSERT INTO totalAlimenteMicDejun  (nume, proteine, lipide, glucide, calorii, scazamant, cantitate, TProteine, TLipide, TGlucide, TCalorii, TCantitate, TNet, tip_meniu, status)
                               SELECT nume, proteine, lipide, glucide, calorii, scazamant, cantitate, TProteine, TLipide, TGlucide, TCalorii, TCantitate, TNet, tip_meniu, status 
-                              FROM cereale p WHERE status = 'Alege' AND (tip_meniu = 'MD' OR tip_meniu = 'MD+P' OR tip_meniu = 'MD+G')
+                              FROM peste p WHERE status = 'Alege' AND (tip_meniu = 'MD' OR tip_meniu = 'MD+P' OR tip_meniu = 'MD+G')
                              AND NOT EXISTS ( SELECT 1 FROM totalAlimenteMicDejun t WHERE t.nume = p.nume);
                               ";
             string queryy5 = @"INSERT INTO totalAlimenteMicDejun  (nume, proteine, lipide, glucide, calorii, scazamant, cantitate, TProteine, TLipide, TGlucide, TCalorii, TCantitate, TNet, tip_meniu, status)
@@ -305,7 +305,7 @@ namespace Aplicatie_Meniu_Gradinita9
                             WHERE m1.{coloanaNume} <> m.{coloanaNume} OR m1.{coloanaNume2} <> m.{coloanaNume2}";
             string query4 = $@"DELETE m1
                             FROM totalAlimenteMicDejun m1
-                            JOIN cereale m ON m.nume = m1.nume
+                            JOIN peste m ON m.nume = m1.nume
                             WHERE m1.{coloanaNume} <> m.{coloanaNume} OR m1.{coloanaNume2} <> m.{coloanaNume2}";
             string query5 = $@"DELETE m1
                             FROM totalAlimenteMicDejun m1
@@ -474,13 +474,7 @@ namespace Aplicatie_Meniu_Gradinita9
             totalLipide = 0;
             totalGlucide = 0;
             totalCalorii = 0;
-
-
             NecesarAlimente na = new NecesarAlimente();
-
-
-           // string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30";
-            //string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

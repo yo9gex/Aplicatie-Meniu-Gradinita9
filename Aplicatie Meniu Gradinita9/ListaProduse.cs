@@ -26,7 +26,7 @@ namespace Aplicatie_Meniu_Gradinita9
             displaySucuriCompoturi();
             displayFructe();
             displayLegumeProaspete();
-            displayCereale();
+            displayPeste();
             displayFructeOleaginoase();
         }
         public void displayPDC()
@@ -320,21 +320,21 @@ namespace Aplicatie_Meniu_Gradinita9
             }
 
         }
-        public void displayCereale()
+        public void displayPeste()
         {
             if (connection.State != ConnectionState.Open)
             {
                 try
                 {
                     connection.Open();
-                    string query = "SELECT COUNT(id) FROM cereale";
+                    string query = "SELECT COUNT(id) FROM peste";
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         SqlDataReader reader = cmd.ExecuteReader();
                         if (reader.Read())
                         {
                             int count = Convert.ToInt32(reader[0]);
-                            cereale_lbl.Text = count.ToString();
+                            peste_lbl.Text = count.ToString();
                         }
                         reader.Close();
                     }
@@ -399,7 +399,7 @@ namespace Aplicatie_Meniu_Gradinita9
             displayFructe();
             displayLegumeProaspete();
             displayFructeOleaginoase();
-            displayCereale();
+            displayPeste();
         }
         private void produseCereale_btn_Click(object sender, EventArgs e)
         {
@@ -577,23 +577,23 @@ namespace Aplicatie_Meniu_Gradinita9
             }
             displayFructeOleaginoase();
         }
-        private void cereale_btn_Click(object sender, EventArgs e)
-        {
-            if (!MainForm.Instance.PnlContainer.Controls.ContainsKey("Cereale"))
-            {
-                Cereale cereale = new Cereale();
-                cereale.Dock = DockStyle.Fill;
-                MainForm.Instance.PnlContainer.Controls.Add(cereale);
-            }
-            MainForm.Instance.PnlContainer.Controls["Cereale"].BringToFront();
-            MainForm.Instance.BtnListaProduse.Visible = true;
-            Cereale cc = MainForm.Instance.PnlContainer.Controls["Cereale"] as Cereale;
-            if (cc != null && cc.dataCereale != null)
-            {
-                cc.RefreshData();
-            }
-            displayCereale();
-        }
+        //private void cereale_btn_Click(object sender, EventArgs e)
+        //{
+        //    if (!MainForm.Instance.PnlContainer.Controls.ContainsKey("Cereale"))
+        //    {
+        //        Cereale cereale = new Cereale();
+        //        cereale.Dock = DockStyle.Fill;
+        //        MainForm.Instance.PnlContainer.Controls.Add(cereale);
+        //    }
+        //    MainForm.Instance.PnlContainer.Controls["Cereale"].BringToFront();
+        //    MainForm.Instance.BtnListaProduse.Visible = true;
+        //    Cereale cc = MainForm.Instance.PnlContainer.Controls["Cereale"] as Cereale;
+        //    if (cc != null && cc.dataCereale != null)
+        //    {
+        //        cc.RefreshData();
+        //    }
+        //    displayCereale();
+        //}
         private void oua_btn_Click(object sender, EventArgs e)
         {
             //adauga user control-ul in panelul din main form
@@ -611,6 +611,24 @@ namespace Aplicatie_Meniu_Gradinita9
                 oua1.RefreshData();
             }
             displayOUA();
+        }
+
+        private void peste_btn_Click(object sender, EventArgs e)
+        {
+            if (!MainForm.Instance.PnlContainer.Controls.ContainsKey("Peste"))
+            {
+                Peste peste = new Peste();
+                peste.Dock = DockStyle.Fill;
+                MainForm.Instance.PnlContainer.Controls.Add(peste);
+            }
+            MainForm.Instance.PnlContainer.Controls["Peste"].BringToFront();
+            MainForm.Instance.BtnListaProduse.Visible = true;
+            Peste pc = MainForm.Instance.PnlContainer.Controls["Peste"] as Peste;
+            if (pc != null && pc.dataPeste != null)
+            {
+                pc.RefreshData();
+            }
+            displayPeste();
         }
     }
 }

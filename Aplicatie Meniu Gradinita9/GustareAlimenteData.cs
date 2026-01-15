@@ -17,9 +17,7 @@ namespace Aplicatie_Meniu_Gradinita9
         public string Status { get; set; }//9
 
 
-        // SqlConnection connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
 
-        // SqlConnection connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True");
         string dbPath;
         string connectionString;
         SqlConnection connection;
@@ -148,7 +146,7 @@ namespace Aplicatie_Meniu_Gradinita9
                 try
                 {
                     connection.Open();
-                    string query = "SELECT * FROM cereale WHERE status = 'Alege' AND (tip_meniu = 'G' OR tip_meniu = 'P+G' OR tip_meniu = 'MD+G') ";
+                    string query = "SELECT * FROM peste WHERE status = 'Alege' AND (tip_meniu = 'G' OR tip_meniu = 'P+G' OR tip_meniu = 'MD+G') ";
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
                         SqlDataReader reader = cmd.ExecuteReader();

@@ -69,7 +69,8 @@ namespace Aplicatie_Meniu_Gradinita9
         {
             NecesarAlimente nal = new NecesarAlimente();
 
-            nal.CalculeazaParametri(out int NumarCopiiTotal, out string tBrut, out string tC, out string tP, out string tL, out string tG, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
+            nal.CalculeazaParametri(out int numarCopiiTotal, out string tBrut, out string tC, out string tP, out string tP_veg, out string tP_anim, out string tL, out string tL_veg, out string tL_anim, out string tG, out string tFier,
+             out string tCalciu, out string tCal, out string procentProteine, out string procentGlucide, out string procentLipide,
             nal.GetTotalCantitate_lbl());
 
             double.TryParse(tP, out double proteine);
@@ -143,12 +144,12 @@ namespace Aplicatie_Meniu_Gradinita9
                     table.Cell().Element(CellStyling).Padding(0).AlignRight().Text(pd.Lipide.ToString());
                     table.Cell().Element(CellStyling).Padding(0).AlignRight().Text(pd.Glucide.ToString());
                     table.Cell().Element(CellStyling).Padding(0).AlignRight().Text(pd.Calorii.ToString());
-                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((cantitateDouble / NumarCopiiTotal).ToString("0.00"));
-                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((netDouble / NumarCopiiTotal).ToString("0.00"));
-                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((proteineDouble / NumarCopiiTotal).ToString("0.00"));
-                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((lipideDouble / NumarCopiiTotal).ToString("0.00"));
-                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((glucideDouble / NumarCopiiTotal).ToString("0.00"));
-                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((caloriiDouble / NumarCopiiTotal).ToString("0.00"));
+                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((cantitateDouble / numarCopiiTotal).ToString("0.00"));
+                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((netDouble / numarCopiiTotal).ToString("0.00"));
+                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((proteineDouble / numarCopiiTotal).ToString("0.00"));
+                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((lipideDouble / numarCopiiTotal).ToString("0.00"));
+                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((glucideDouble / numarCopiiTotal).ToString("0.00"));
+                    table.Cell().Element(CellStyling).Padding(0).AlignRight().Text((caloriiDouble / numarCopiiTotal).ToString("0.00"));
                     
 
                     static IContainer CellStyling(IContainer container)
@@ -165,12 +166,12 @@ namespace Aplicatie_Meniu_Gradinita9
                 .BorderColor(Colors.Black);
 
                 table.Cell().Padding(2).Text("TOTAL /copil").Bold().AlignCenter();
-                table.Cell().AlignRight().Text((brut / NumarCopiiTotal).ToString("0.00"));
-                table.Cell().AlignRight().Text((cantitate / NumarCopiiTotal).ToString("0.00"));
-                table.Cell().AlignRight().Text((proteine / NumarCopiiTotal).ToString("0.00"));
-                table.Cell().AlignRight().Text((lipide / NumarCopiiTotal).ToString("0.00"));
-                table.Cell().AlignRight().Text((glucide / NumarCopiiTotal).ToString("0.00"));
-                table.Cell().AlignRight().Text((calorii / NumarCopiiTotal).ToString("0.00"));
+                table.Cell().AlignRight().Text((brut / numarCopiiTotal).ToString("0.00"));
+                table.Cell().AlignRight().Text((cantitate / numarCopiiTotal).ToString("0.00"));
+                table.Cell().AlignRight().Text((proteine / numarCopiiTotal).ToString("0.00"));
+                table.Cell().AlignRight().Text((lipide / numarCopiiTotal).ToString("0.00"));
+                table.Cell().AlignRight().Text((glucide / numarCopiiTotal).ToString("0.00"));
+                table.Cell().AlignRight().Text((calorii / numarCopiiTotal).ToString("0.00"));
                
 
 
@@ -186,7 +187,7 @@ namespace Aplicatie_Meniu_Gradinita9
                     .PaddingVertical(6)
                     .BorderBottom(0)
                     .BorderColor(Colors.Black);
-                table.Cell().Padding(4).Text("TOTAL" + "\n" + NumarCopiiTotal + "  copii").Bold().AlignCenter();
+                table.Cell().Padding(4).Text("TOTAL" + "\n" + numarCopiiTotal + "  copii").Bold().AlignCenter();
                 table.Cell().AlignRight();
                 table.Cell().AlignRight();
                 table.Cell().AlignRight().Text(totalProteineCopii);

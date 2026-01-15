@@ -17,8 +17,6 @@ namespace Aplicatie_Meniu_Gradinita9
     public partial class ProduseDerivateCereale : UserControl
 
     {
-        // SqlConnection conn = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename=C:\Users\LeVantinik\Documents\meniul.mdf;Integrated Security=True;Connect Timeout=30");
-        //SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True");
         string dbPath;
         string connectionString;
         SqlConnection conn;
@@ -286,7 +284,9 @@ namespace Aplicatie_Meniu_Gradinita9
 
                         string query = "UPDATE produseDerivateCereale SET  proteine=@Proteine, lipide=@Lipide, glucide=@Glucide, calorii=@Calorii, scazamant=@Scazamant, status=@Status, " +
                             "proteine_vegetale=@Proteine_vegetale, proteine_animale=@Proteine_animale, lipide_vegetale=@Lipide_vegetale, lipide_animale=@Lipide_animale, fier=@Fier, calciu=@Calciu, grupa_produse1=@Grupa_produse1, " +
-                            "grupa_produse2=@Grupa_produse2, coeficient_echivalent1=@Coeficient_echivalent1, coeficient_echivalent2=@Coeficient_echivalent2 WHERE nume=@NumeProdus";
+                            "grupa_produse2=@Grupa_produse2, coeficient_echivalent1=@Coeficient_echivalent1, coeficient_echivalent2=@Coeficient_echivalent2, cantitate=@cantitate, TCantitate=@TCantitate, TNet=@TNet, " +
+                            "tip_meniu=@tip_meniu, TProteine=@TProteine,TProteineVegetale=@TProteineVegetale, TProteineAnimale = @TProteineAnimale, TLipide=@TLipide, TLipideVegetale=@TLipideVegetale, " +
+                            "TLipideAnimale=@TLipideAnimale, TGlucide=@TGlucide,TFier=@TFier, TCalciu=@TCalciu, TCalorii=@TCalorii, TCoeficient1=@TCoeficient1, TCoeficient2=@TCoeficient2 WHERE nume=@NumeProdus";
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.Parameters.AddWithValue("@NumeProdus", numeProdus_txt.Text.Trim());
@@ -306,6 +306,22 @@ namespace Aplicatie_Meniu_Gradinita9
                             cmd.Parameters.AddWithValue("@Grupa_produse2", grup2_txt.Text.Trim());
                             cmd.Parameters.AddWithValue("@Coeficient_echivalent1", coef1_txt.Text.Trim());
                             cmd.Parameters.AddWithValue("@Coeficient_echivalent2", coef2_txt.Text.Trim());
+                            cmd.Parameters.AddWithValue("@cantitate", 0); // Actualizeaza cantitatea la 0
+                            cmd.Parameters.AddWithValue("@TCantitate", 0); // Actualizeaza cantitatea totala la 0
+                            cmd.Parameters.AddWithValue("@TNet", 0); // Actualizeaza netul total la 0
+                            cmd.Parameters.AddWithValue("@tip_meniu", ""); // Actualizeaza tipul meniului la gol
+                            cmd.Parameters.AddWithValue("@TProteine", 0); // Actualizeaza proteinele totale la 0
+                            cmd.Parameters.AddWithValue("@TProteineVegetale", 0); // Actualizeaza proteinele vegetale totale la 0
+                            cmd.Parameters.AddWithValue("@TProteineAnimale", 0); // Actualizeaza proteinele animale totale la 0
+                            cmd.Parameters.AddWithValue("@TLipide", 0); // Actualizeaza lipidele totale la 0
+                            cmd.Parameters.AddWithValue("@TLipideVegetale", 0); // Actualizeaza lipidele vegetale totale la 0
+                            cmd.Parameters.AddWithValue("@TLipideAnimale", 0); // Actualizeaza lipidele animale totale la 0
+                            cmd.Parameters.AddWithValue("@TGlucide", 0); // Actualizeaza glucidele totale la 0
+                            cmd.Parameters.AddWithValue("@TFier", 0); // Actualizeaza fierul total la 0
+                            cmd.Parameters.AddWithValue("@TCalciu", 0); // Actualizeaza calciul total la 0
+                            cmd.Parameters.AddWithValue("@TCalorii", 0); // Actualizeaza caloriile totale la 0
+                            cmd.Parameters.AddWithValue("@TCoeficient1", 0); // Actualizeaza coeficientul 1 total la 0
+                            cmd.Parameters.AddWithValue("@TCoeficient2", 0); // Actualizeaza coeficientul 2 total la 0
 
                             cmd.ExecuteNonQuery();
                             displayProduseDerivate();

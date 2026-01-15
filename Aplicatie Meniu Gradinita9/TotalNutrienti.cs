@@ -10,8 +10,14 @@ namespace Aplicatie_Meniu_Gradinita9
     {
         public string Date;
         public string TotalProteine;
+        public string ProteineVegetale;
+        public string ProteineAnimale;
         public string TotalLipide;
+        public string LipideVegetale;
+        public string LipideAnimale;
         public string TotalGlucide;
+        public string TotalFier;
+        public string TotalCalciu;
         public string TotalCalorii;
         public string ProcentProteine;
         public string ProcentLipide;
@@ -33,6 +39,7 @@ namespace Aplicatie_Meniu_Gradinita9
             DisplayCalorii();
             DisplayCalciu();
             DisplayFier();
+            DisplayGrupProduse();
             // Adăugați handler-ul de eveniment
             this.proteineData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.proteineData_RowPostPaint);
             this.lipideData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.proteineData_RowPostPaint);
@@ -40,6 +47,7 @@ namespace Aplicatie_Meniu_Gradinita9
             this.caloriiData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.proteineData_RowPostPaint);
             this.calciuData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.proteineData_RowPostPaint);
             this.fierData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.proteineData_RowPostPaint);
+            this.grupProduseData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.proteineData_RowPostPaint);
 
         }
         private void proteineData_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
@@ -81,6 +89,7 @@ namespace Aplicatie_Meniu_Gradinita9
             DisplayCalorii();
             DisplayCalciu();
             DisplayFier();
+            DisplayGrupProduse();
             CalculParametriNutrienti();
         }
         private void DisplayProteine()
@@ -120,6 +129,12 @@ namespace Aplicatie_Meniu_Gradinita9
             List<FierTotalData> dataList = ftd.ListaData();
             fierData.DataSource = dataList;
         }
+        private void DisplayGrupProduse()
+        {
+            GrupProduseData gpd = new GrupProduseData();
+            List<GrupProduseData> dataList = gpd.ListaData();
+            grupProduseData.DataSource = dataList;
+        }
 
         private void TotalNutrienti_Load(object sender, EventArgs e)
         {
@@ -127,10 +142,16 @@ namespace Aplicatie_Meniu_Gradinita9
 
         }
         public void CalculParametriNutrienti()
-        {            
+        {
             decimal totalProteine = 0;
+            decimal proteineVeg = 0;
+            decimal proteineAnim = 0;
             decimal totalLipide = 0;
+            decimal lipideVeg = 0;
+            decimal lipideAnim = 0;
             decimal totalGlucide = 0;
+            decimal totalFier = 0;
+            decimal totalCalciu = 0;
             decimal totalCalorii = 0;
             decimal procentProteine;
             decimal procentLipide;
@@ -168,7 +189,7 @@ namespace Aplicatie_Meniu_Gradinita9
             try
             {
                 conn.Open();
-                string query = "SELECT total_proteine FROM proteine WHERE data_adaugare is NOT NULL";
+                string query = "SELECT total_proteine, proteine_vegetale, proteine_animale FROM proteine WHERE data_adaugare is NOT NULL";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -178,12 +199,16 @@ namespace Aplicatie_Meniu_Gradinita9
                             if (!reader.IsDBNull(0))
                             {
                                 totalProteine += Convert.ToDecimal(reader["total_proteine"]) / 10;
+                                proteineVeg += Convert.ToDecimal(reader["proteine_vegetale"]) / 10;
+                                proteineAnim += Convert.ToDecimal(reader["proteine_animale"]) / 10;
 
                             }
                         }
                     }
                 }
                 TotalProteine = totalProteine.ToString();
+                ProteineVegetale = proteineVeg.ToString();
+                ProteineAnimale = proteineAnim.ToString();
                 totalProteine_lbl.Text = totalProteine.ToString();
                 if (totalCalorii != 0)
                 {
@@ -205,7 +230,7 @@ namespace Aplicatie_Meniu_Gradinita9
             {
                 conn.Open();
 
-                string query = "SELECT total_lipide FROM lipide WHERE data_adaugare is NOT NULL";
+                string query = "SELECT total_lipide, lipide_vegetale, lipide_animale FROM lipide WHERE data_adaugare is NOT NULL";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -216,6 +241,8 @@ namespace Aplicatie_Meniu_Gradinita9
                             if (!reader.IsDBNull(0))
                             {
                                 totalLipide += Convert.ToDecimal(reader["total_lipide"]) / 10;
+                                lipideVeg += Convert.ToDecimal(reader["lipide_vegetale"]) / 10;
+                                lipideAnim += Convert.ToDecimal(reader["lipide_animale"]) / 10;
 
                             }
                         }
@@ -223,6 +250,8 @@ namespace Aplicatie_Meniu_Gradinita9
                 }
 
                 TotalLipide = totalLipide.ToString();
+                LipideVegetale = lipideVeg.ToString();
+                LipideAnimale = lipideAnim.ToString();
                 totalLipide_lbl.Text = totalLipide.ToString();
                 if (totalCalorii != 0)
                 {
@@ -279,7 +308,75 @@ namespace Aplicatie_Meniu_Gradinita9
                 conn.Close();
 
             }
+            try
+            {
+                conn.Open();
 
+                string query = "SELECT total_fier FROM fier WHERE data_adaugare is NOT NULL";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (!reader.IsDBNull(0))
+                            {
+                                totalFier += Convert.ToDecimal(reader["total_fier"]) / 10;
+
+                            }
+                        }
+                    }
+                }
+
+                TotalFier = totalFier.ToString();
+                totalFier_lbl.Text = totalFier.ToString();
+
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("A aparut o eroare: " + ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+
+            }
+            try
+            {
+                conn.Open();
+
+                string query = "SELECT total_calciu FROM calciu WHERE data_adaugare is NOT NULL";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (!reader.IsDBNull(0))
+                            {
+                                totalCalciu += Convert.ToDecimal(reader["total_calciu"]) / 10;
+
+                            }
+                        }
+                    }
+                }
+                TotalCalciu = totalCalciu.ToString();
+                totalCalciu_lbl.Text = totalCalciu.ToString();
+
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("A aparut o eroare: " + ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+
+            }
         }
         private void reset_btn_Click(object sender, EventArgs e)
         {
@@ -300,6 +397,10 @@ namespace Aplicatie_Meniu_Gradinita9
                     string deleteLipideQuery = "DELETE FROM lipide";
                     string deleteGlucideQuery = "DELETE FROM glucide";
                     string deleteCaloriiQuery = "DELETE FROM calorii";
+                    string deleteCalciuQuery = "DELETE FROM calciu";
+                    string deleteFierQuery = "DELETE FROM fier";
+                    string deleteGrupProduseQuery = "DELETE FROM grupProduse";
+
                     using (SqlCommand cmd = new SqlCommand(deleteProteineQuery, conn))
                     {
                         cmd.ExecuteNonQuery();
@@ -313,6 +414,18 @@ namespace Aplicatie_Meniu_Gradinita9
                         cmd.ExecuteNonQuery();
                     }
                     using (SqlCommand cmd = new SqlCommand(deleteCaloriiQuery, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (SqlCommand cmd = new SqlCommand(deleteCalciuQuery, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (SqlCommand cmd = new SqlCommand(deleteFierQuery, conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (SqlCommand cmd = new SqlCommand(deleteGrupProduseQuery, conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
@@ -351,26 +464,38 @@ namespace Aplicatie_Meniu_Gradinita9
                             string deleteQueryLipide = "DELETE FROM lipide WHERE data_adaugare = @dataAdaugare";
                             string deleteQueryGlucide = "DELETE FROM glucide WHERE data_adaugare = @dataAdaugare";
                             string deleteQueryCalorii = "DELETE FROM calorii WHERE data_adaugare = @dataAdaugare";
+                            string deleteQueryCalciu = "DELETE FROM calciu WHERE data_adaugare = @dataAdaugare";
+                            string deleteQueryFier = "DELETE FROM fier WHERE data_adaugare = @dataAdaugare";
+                            string deleteQueryGrupProduse = "DELETE FROM grupProduse WHERE data_adaugare = @dataAdaugare";
 
                             SqlCommand cmd = new SqlCommand(deleteQueryProteine, conn);
                             SqlCommand cmdLipide = new SqlCommand(deleteQueryLipide, conn);
                             SqlCommand cmdGlucide = new SqlCommand(deleteQueryGlucide, conn);
                             SqlCommand cmdCalorii = new SqlCommand(deleteQueryCalorii, conn);
+                            SqlCommand cmdCalciu = new SqlCommand(deleteQueryCalciu, conn);
+                            SqlCommand cmdFier = new SqlCommand(deleteQueryFier, conn);
+                            SqlCommand cmdGrupProduse = new SqlCommand(deleteQueryGrupProduse, conn);
 
                             cmd.Parameters.AddWithValue("@dataAdaugare", Convert.ToDateTime(data_txt.Text.Trim(), new CultureInfo("ro-RO")));
                             cmdLipide.Parameters.AddWithValue("@dataAdaugare", Convert.ToDateTime(data_txt.Text.Trim(), new CultureInfo("ro-RO")));
                             cmdGlucide.Parameters.AddWithValue("@dataAdaugare", Convert.ToDateTime(data_txt.Text.Trim(), new CultureInfo("ro-RO")));
                             cmdCalorii.Parameters.AddWithValue("@dataAdaugare", Convert.ToDateTime(data_txt.Text.Trim(), new CultureInfo("ro-RO")));
+                            cmdCalciu.Parameters.AddWithValue("@dataAdaugare", Convert.ToDateTime(data_txt.Text.Trim(), new CultureInfo("ro-RO")));
+                            cmdFier.Parameters.AddWithValue("@dataAdaugare", Convert.ToDateTime(data_txt.Text.Trim(), new CultureInfo("ro-RO")));
+                            cmdGrupProduse.Parameters.AddWithValue("@dataAdaugare", Convert.ToDateTime(data_txt.Text.Trim(), new CultureInfo("ro-RO")));
 
 
                             int rowsAffected = cmd.ExecuteNonQuery();
                             rowsAffected = cmdLipide.ExecuteNonQuery();
                             rowsAffected = cmdGlucide.ExecuteNonQuery();
                             rowsAffected = cmdCalorii.ExecuteNonQuery();
+                            rowsAffected = cmdCalciu.ExecuteNonQuery();
+                            rowsAffected = cmdFier.ExecuteNonQuery();
+                            rowsAffected = cmdGrupProduse.ExecuteNonQuery();
 
                             if (rowsAffected > 0)
                             {
-                                MessageBox.Show("Inregistrarea din Proteine, Lipide, Glucide si Calorii din data de " + data_txt.Text + "a fost stearsa cu succes.", "Stergere Reusita", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("Inregistrarea din Proteine, Lipide, Glucide, Calorii, Fier, Calciu si grupul Produse din data de " + data_txt.Text + "a fost stearsa cu succes.", "Stergere Reusita", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
@@ -465,6 +590,14 @@ namespace Aplicatie_Meniu_Gradinita9
 
                 data_txt.Text = row.Cells[0].Value.ToString();
 
+            }
+        }
+        private void grupProduseData_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex != -1)
+            {
+                DataGridViewRow row = grupProduseData.Rows[e.RowIndex];
+                data_txt.Text = row.Cells[0].Value.ToString();
             }
         }
     }

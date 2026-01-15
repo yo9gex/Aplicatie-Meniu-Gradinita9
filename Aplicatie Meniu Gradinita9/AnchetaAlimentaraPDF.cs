@@ -53,9 +53,10 @@ namespace Aplicatie_Meniu_Gradinita9
         }
         private void ComposeContent(IContainer container)
         {
+           
             TotalNutrienti tn = new TotalNutrienti();
-            _anchetaAlimentara.CalculAbatereMedie(out string totalAbatereC, out string totalAbatereP, out string totalAbatereL, out string totalAbatereG);
-            _anchetaAlimentara.InterpretareRezultate(out string interpretareC, out string interpretareP, out string interpretareL, out string interpretareG);
+            _anchetaAlimentara.CalculAbatereMedie(out string totalAbatereC, out string totalAbatereP, out string totalAbatereL, out string totalAbatereG, out string totalAbatereCalciu, out string totalAbatereFier);
+            _anchetaAlimentara.InterpretareRezultate(out string interpretareC, out string interpretareP, out string interpretareL, out string interpretareG, out string interpretareCalciu, out string interpretareFier);
 
             container.Border(0)
                 .Table(table =>
@@ -86,16 +87,16 @@ namespace Aplicatie_Meniu_Gradinita9
                     table.Cell().TableValueCell().Text(totalAbatereC).AlignCenter();
                     table.Cell().TableValueCell();
 
-                    table.Cell().TableLabelCell("Proteine Totale" + "\n" + "(gr.)");
-                    table.Cell().TableValueCell().Text(tn.TotalProteine).AlignCenter();
+                    table.Cell().TableLabelCell("*Proteine*" + "\n" + "Vegetale" + "\n" + "Animale" +"\n" + "Totale" + "\n" + "(gr.)");
+                    table.Cell().TableValueCell().Text("\n"+ tn.ProteineVegetale + "\n" + tn.ProteineAnimale + "\n" + tn.TotalProteine).AlignCenter();
                     table.Cell().TableValueCell().Text("37 g" + "\n\n" + "(45-66)").AlignCenter();
                     table.Cell().TableValueCell().Text("29.6 g" + "\n\n" + "(36-52.8)").AlignCenter();
                     table.Cell().TableValueCell().Text(interpretareP).AlignCenter();
                     table.Cell().TableValueCell().Text(totalAbatereP).AlignCenter();
                     table.Cell().TableValueCell().Text(tn.ProcentProteine).AlignCenter();
 
-                    table.Cell().TableLabelCell("Lipide Totale" + "\n" + "(gr.)");
-                    table.Cell().TableValueCell().Text(tn.TotalLipide).AlignCenter();
+                    table.Cell().TableLabelCell("*Lipide*" + "\n" + "Vegetale" + "\n" + "Animale" + "\n" + "Totale"  + "\n" + "(gr.)");
+                    table.Cell().TableValueCell().Text("\n" + tn.LipideVegetale + "\n" + tn.LipideAnimale + "\n" + tn.TotalLipide).AlignCenter();
                     table.Cell().TableValueCell().Text("44 g" + "\n\n" + "(25-68)").AlignCenter();
                     table.Cell().TableValueCell().Text("35.2" + "\n\n" +"(20-54.4)").AlignCenter();
                     table.Cell().TableValueCell().Text(interpretareL).AlignCenter();
@@ -110,7 +111,31 @@ namespace Aplicatie_Meniu_Gradinita9
                     table.Cell().TableValueCell().Text(totalAbatereG).AlignCenter();
                     table.Cell().TableValueCell().Text(tn.ProcentGlucide).AlignCenter();
 
+                    table.Cell().TableLabelCell("Calciu" + "\n" + "(mg)");
+                    table.Cell().TableValueCell().Text(tn.TotalCalciu).AlignCenter();
+                    table.Cell().TableValueCell().Text("900 mg" + "\n\n" ).AlignCenter();
+                    table.Cell().TableValueCell().Text("640 mg").AlignCenter();
+                    table.Cell().TableValueCell().Text(interpretareCalciu).AlignCenter();
+                    table.Cell().TableValueCell().Text(totalAbatereCalciu).AlignCenter();
+                    table.Cell().TableValueCell();
+
+                    table.Cell().TableLabelCell("Fier" + "\n" + "(mg)");
+                    table.Cell().TableValueCell().Text(tn.TotalFier).AlignCenter();
+                    table.Cell().TableValueCell().Text("7 mg" + "\n\n").AlignCenter();
+                    table.Cell().TableValueCell().Text("5.6 mg").AlignCenter();
+                    table.Cell().TableValueCell().Text(interpretareFier).AlignCenter();
+                    table.Cell().TableValueCell().Text(totalAbatereFier).AlignCenter();
+                    table.Cell().TableValueCell();
+
+                    table.Cell();
+                    table.Cell();
+                    table.Cell();
+                    table.Cell();
+                    table.Cell();
+                    table.Cell();
                     table.Cell()
+
+
             .ColumnSpan(1)
             .PaddingVertical(40)
             .AlignCenter()

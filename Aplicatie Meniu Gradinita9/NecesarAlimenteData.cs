@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -19,22 +20,26 @@ namespace Aplicatie_Meniu_Gradinita9
         public string TCantitate { get; set; }//3
         public string TNet { get; set; }//4
         public string TProteine { get; set; }//5
-        public string TLipide { get; set; }//6
-        public string TGlucide { get; set; }//7
-        public string TFier { get; set; }
-        public string TCalciu { get; set; }      
-        public string TCalorii { get; set; }//8
+        public string TProteine_veg { get; set; }//6
+        public string TProteine_anim { get; set; }//7
+        public string TLipide { get; set; }//8 6
+        public string TLipide_veg { get; set; }//9
+        public string TLipide_anim { get; set; }//10
+        public string TGlucide { get; set; }//11 7
+        public string TFier { get; set; }//12 8
+        public string TCalciu { get; set; }  //13 9    
+        public string TCalorii { get; set; } //14 10
         public string Proteine { get; set; }
         public string Lipide { get; set; }
         public string Glucide { get; set; }
          
         public string Calorii { get; set; }
+        public string TCoeficient1 { get; set; }
+        public string TCoeficient2 { get; set; }
 
         string dbPath;
         string connectionString;
         SqlConnection connection;
-        // SqlConnection connection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""F:\8_Proiecte visual studio\Test\Aplicatie Meniu Gradinita9\Aplicatie Meniu Gradinita9\meniul.mdf"";Integrated Security=True");
-
         public List<NecesarAlimenteData> ListaNecesarAlimenteData()
         {
             dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "meniul.mdf");
@@ -65,7 +70,11 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
                             na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
                             na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
@@ -74,6 +83,9 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
                             na.Glucide = reader.IsDBNull(reader.GetOrdinal("glucide")) ? "0.00" : reader["glucide"].ToString();
                             na.Calorii = reader.IsDBNull(reader.GetOrdinal("calorii")) ? "0.00" : reader["calorii"].ToString();
+                            na.TCoeficient1 = reader.IsDBNull(reader.GetOrdinal("TCoeficient1")) ? "0.00" : reader["TCoeficient1"].ToString();
+                            na.TCoeficient2 = reader.IsDBNull(reader.GetOrdinal("TCoeficient2")) ? "0.00" : reader["TCoeficient2"].ToString();
+
 
                             produseList.Add(na);
                         }
@@ -114,8 +126,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -161,8 +179,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -208,8 +232,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -255,8 +285,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -302,8 +338,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -349,8 +391,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -396,8 +444,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -443,8 +497,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -490,8 +550,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -536,8 +602,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
@@ -565,7 +637,7 @@ namespace Aplicatie_Meniu_Gradinita9
                 {
                     connection.Open();
 
-                    string query = "SELECT * FROM cereale WHERE status = 'Alege' ";
+                    string query = "SELECT * FROM peste WHERE status = 'Alege' ";
 
 
                     using (SqlCommand cmd = new SqlCommand(query, connection))
@@ -582,8 +654,14 @@ namespace Aplicatie_Meniu_Gradinita9
                             na.TCantitate = reader["TCantitate"].ToString();
                             na.TNet = reader.IsDBNull(reader.GetOrdinal("TNet")) ? "0.00" : reader["TNet"].ToString();
                             na.TProteine = reader.IsDBNull(reader.GetOrdinal("TProteine")) ? "0.00" : reader["TProteine"].ToString();
+                            na.TProteine_veg = reader.IsDBNull(reader.GetOrdinal("TProteineVegetale")) ? "0.00" : reader["TProteineVegetale"].ToString();
+                            na.TProteine_anim = reader.IsDBNull(reader.GetOrdinal("TProteineAnimale")) ? "0.00" : reader["TProteineAnimale"].ToString();
                             na.TLipide = reader.IsDBNull(reader.GetOrdinal("TLipide")) ? "0.00" : reader["TLipide"].ToString();
+                            na.TLipide_veg = reader.IsDBNull(reader.GetOrdinal("TLipideVegetale")) ? "0.00" : reader["TLipideVegetale"].ToString();
+                            na.TLipide_anim = reader.IsDBNull(reader.GetOrdinal("TLipideAnimale")) ? "0.00" : reader["TLipideAnimale"].ToString();
                             na.TGlucide = reader.IsDBNull(reader.GetOrdinal("TGlucide")) ? "0.00" : reader["TGlucide"].ToString();
+                            na.TFier = reader.IsDBNull(reader.GetOrdinal("TFier")) ? "0.00" : reader["TFier"].ToString();
+                            na.TCalciu = reader.IsDBNull(reader.GetOrdinal("TCalciu")) ? "0.00" : reader["TCalciu"].ToString();
                             na.TCalorii = reader.IsDBNull(reader.GetOrdinal("TCalorii")) ? "0.00" : reader["TCalorii"].ToString();
                             na.Proteine = reader.IsDBNull(reader.GetOrdinal("proteine")) ? "0.00" : reader["proteine"].ToString();
                             na.Lipide = reader.IsDBNull(reader.GetOrdinal("lipide")) ? "0.00" : reader["lipide"].ToString();
